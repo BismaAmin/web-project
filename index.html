@@ -1,0 +1,785 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sizzle & Share - Cook, Capture, Challenge</title>
+    <link rel="stylesheet" href="css/main.css">
+    
+    <style>
+        /* Additional styles for logout confirmation */
+        .logout-confirm-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 10000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+        }
+        .logout-confirm-modal.show {
+            display: flex;
+        }
+        .logout-confirm-content {
+            background: white;
+            border-radius: 16px;
+            padding: 2rem;
+            max-width: 400px;
+            width: 90%;
+            text-align: center;
+            animation: slideUp 0.3s ease;
+        }
+        .logout-confirm-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            margin-top: 1.5rem;
+        }
+        @keyframes slideUp {
+            from {
+                transform: translateY(50px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .recipe-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.recipe-image {
+    overflow: hidden;
+}
+
+    </style>
+</head>
+<body>
+
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="navbar-container">
+            <a href="index.html" class="navbar-logo">
+                <span class="logo-icon">🍳</span>
+                <span class="logo-text">Sizzle & Share</span>
+            </a>
+            
+            <button class="menu-btn" id="menuBtn" aria-label="Toggle menu" aria-expanded="false">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+            
+            <ul class="nav-menu" id="navMenu">
+                <!-- Public Links (Always Visible) -->
+                <li class="nav-item"><a href="index.html" class="nav-link" id="homeLink">Home</a></li>
+                <li class="nav-item"><a href="gallery.html" class="nav-link" id="galleryLink">Gallery</a></li>
+                <li class="nav-item"><a href="leaderboard.html" class="nav-link" id="leaderboardLink">Leaderboard</a></li>
+                <li class="nav-item"><a href="about.html" class="nav-link" id="aboutLink">About</a></li>
+                
+                <!-- Protected Links (Visible only when logged in) -->
+                <li class="nav-item user-only"><a href="ingredients.html" class="nav-link">Ingredients</a></li>
+                <li class="nav-item user-only"><a href="recipes.html" class="nav-link">Recipes</a></li>
+                <li class="nav-item user-only"><a href="challenge.html" class="nav-link">Challenge</a></li>
+                <li class="nav-item user-only"><a href="user/dashboard.html" class="nav-link">Dashboard</a></li>
+                <li class="nav-item user-only"><a href="user/profile.html" class="nav-link">Profile</a></li>
+                <li class="nav-item user-only"><a href="upload.html" class="nav-link">Upload</a></li>
+                
+                <!-- Auth Links - Guest Only -->
+                <li class="nav-item guest-only"><a href="login.html" class="btn btn-primary btn-sm">Login</a></li>
+                <li class="nav-item guest-only"><a href="signup.html" class="btn btn-outline btn-sm">Sign Up</a></li>
+                
+                <!-- Logout Button - User Only -->
+                <li class="nav-item user-only">
+                    <button class="btn btn-danger btn-sm" onclick="showLogoutConfirm()">Logout</button>
+                </li>
+                
+                <!-- Dark Mode Toggle -->
+                <li class="nav-item">
+                    <button class="theme-toggle" id="darkModeToggle" onclick="toggleDarkMode()">🌙</button>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Logout Confirmation Modal -->
+    <div id="logoutModal" class="logout-confirm-modal">
+        <div class="logout-confirm-content">
+            <div style="font-size: 3rem; margin-bottom: 1rem;">🚪</div>
+            <h3>Confirm Logout</h3>
+            <p>Are you sure you want to logout from Sizzle & Share?</p>
+            <div class="logout-confirm-buttons">
+                <button class="btn btn-outline" onclick="closeLogoutModal()">Cancel</button>
+                <button class="btn btn-danger" onclick="confirmLogout()">Yes, Logout</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ========== LOGOUT FUNCTIONS ==========
+        
+        function showLogoutConfirm() {
+            const modal = document.getElementById('logoutModal');
+            if (modal) {
+                modal.classList.add('show');
+            }
+        }
+        
+        function closeLogoutModal() {
+            const modal = document.getElementById('logoutModal');
+            if (modal) {
+                modal.classList.remove('show');
+            }
+        }
+        
+        function confirmLogout() {
+            closeLogoutModal();
+            
+            // Clear ALL localStorage
+            localStorage.removeItem('isLoggedIn');
+            localStorage.removeItem('username');
+            localStorage.removeItem('userEmail');
+            localStorage.removeItem('selectedIngredients');
+            localStorage.removeItem('challengeJoined');
+            localStorage.removeItem('galleryLikedItems');
+            localStorage.removeItem('userStats');
+            localStorage.removeItem('userProfile');
+            localStorage.removeItem('users');
+            
+            // Clear sessionStorage
+            sessionStorage.clear();
+            
+            // IMPORTANT: Set a flag in localStorage to notify other tabs
+            localStorage.setItem('logoutEvent', Date.now().toString());
+            
+            // Update navbar for current page
+            updateNavbarForGuest();
+            
+            // Show notification
+            showNotificationMessage('Logged out successfully!', 'success');
+            
+            // Optional: Redirect to home after 1 second
+            setTimeout(function() {
+                window.location.href = 'index.html';
+            }, 1000);
+        }
+        
+        // ========== NAVBAR UPDATE FUNCTIONS ==========
+        
+        function updateNavbarForGuest() {
+            // Hide user-only elements
+            const userOnlyElements = document.querySelectorAll('.user-only');
+            userOnlyElements.forEach(el => {
+                el.style.display = 'none';
+            });
+            
+            // Show guest-only elements
+            const guestOnlyElements = document.querySelectorAll('.guest-only');
+            guestOnlyElements.forEach(el => {
+                el.style.display = 'block';
+            });
+            
+            // Remove logged-in class from body
+            document.body.classList.remove('logged-in');
+        }
+        
+        function updateNavbarForUser() {
+            // Show user-only elements
+            const userOnlyElements = document.querySelectorAll('.user-only');
+            userOnlyElements.forEach(el => {
+                el.style.display = 'block';
+            });
+            
+            // Hide guest-only elements
+            const guestOnlyElements = document.querySelectorAll('.guest-only');
+            guestOnlyElements.forEach(el => {
+                el.style.display = 'none';
+            });
+            
+            // Add logged-in class to body
+            document.body.classList.add('logged-in');
+        }
+        
+        function checkLoginStatusAndUpdateNavbar() {
+            const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
+            
+            if (isLoggedIn) {
+                updateNavbarForUser();
+            } else {
+                updateNavbarForGuest();
+            }
+        }
+        
+        // ========== CROSS-TAB SYNC - LISTEN FOR LOGOUT FROM OTHER TABS ==========
+        
+        function listenForLogoutFromOtherTabs() {
+            window.addEventListener('storage', function(e) {
+                // Check if the logoutEvent was set in another tab
+                if (e.key === 'logoutEvent') {
+                    console.log('Logout detected from another tab!');
+                    
+                    // Clear any remaining localStorage items
+                    localStorage.removeItem('isLoggedIn');
+                    localStorage.removeItem('username');
+                    localStorage.removeItem('userEmail');
+                    localStorage.removeItem('selectedIngredients');
+                    localStorage.removeItem('challengeJoined');
+                    localStorage.removeItem('galleryLikedItems');
+                    localStorage.removeItem('userStats');
+                    localStorage.removeItem('userProfile');
+                    
+                    // Update navbar to guest view
+                    updateNavbarForGuest();
+                    
+                    // Show notification
+                    showNotificationMessage('You have been logged out from another tab', 'info');
+                    
+                    // Optional: Reload page after 2 seconds
+                    setTimeout(function() {
+                        window.location.reload();
+                    }, 2000);
+                }
+                
+                // Also listen for direct isLoggedIn changes
+                if (e.key === 'isLoggedIn' && e.newValue === 'false') {
+                    updateNavbarForGuest();
+                    showNotificationMessage('Session expired. Please login again.', 'warning');
+                    setTimeout(function() {
+                        window.location.reload();
+                    }, 1500);
+                }
+            });
+        }
+        
+        // ========== NOTIFICATION FUNCTION ==========
+        
+        function showNotificationMessage(message, type) {
+            // Remove any existing notification
+            const existing = document.querySelector('.dynamic-notification');
+            if (existing) existing.remove();
+            
+            const notification = document.createElement('div');
+            notification.className = 'dynamic-notification';
+            notification.textContent = message;
+            const bgColor = type === 'success' ? '#06D6A0' : type === 'error' ? '#EF476F' : type === 'warning' ? '#FFE66D' : '#4ECDC4';
+            const textColor = type === 'warning' ? '#333' : 'white';
+            notification.style.cssText = `
+                position: fixed;
+                bottom: 20px;
+                right: 20px;
+                padding: 12px 20px;
+                border-radius: 8px;
+                background: ${bgColor};
+                color: ${textColor};
+                z-index: 10001;
+                animation: slideIn 0.3s ease;
+                font-weight: 500;
+                font-family: 'Century Gothic', 'Trebuchet MS', 'Futura', 'Arial', sans-serif;
+                box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            `;
+            document.body.appendChild(notification);
+            setTimeout(() => {
+                notification.style.animation = 'slideOut 0.3s ease';
+                setTimeout(() => notification.remove(), 300);
+            }, 3000);
+        }
+        
+        // ========== PROTECT PROTECTED PAGES ==========
+        
+        function protectProtectedLinks() {
+            const protectedPages = ['ingredients.html', 'recipes.html', 'challenge.html', 'user/dashboard.html', 'user/profile.html', 'upload.html'];
+            
+            protectedPages.forEach(page => {
+                const links = document.querySelectorAll(`a[href="${page}"]`);
+                links.forEach(link => {
+                    link.addEventListener('click', function(e) {
+                        const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
+                        if (!isLoggedIn) {
+                            e.preventDefault();
+                            showNotificationMessage('Please login to access this page', 'error');
+                            setTimeout(() => {
+                                window.location.href = 'login.html';
+                            }, 1000);
+                        }
+                    });
+                });
+            });
+        }
+        
+        // ========== DARK MODE ==========
+        
+        function initDarkMode() {
+            const isDark = localStorage.getItem('darkMode') === 'true';
+            if (isDark) {
+                document.body.classList.add('dark-mode');
+                const toggleBtn = document.getElementById('darkModeToggle');
+                if (toggleBtn) toggleBtn.textContent = '☀️';
+            }
+        }
+        
+        function toggleDarkMode() {
+            document.body.classList.toggle('dark-mode');
+            const isDark = document.body.classList.contains('dark-mode');
+            localStorage.setItem('darkMode', isDark);
+            const toggleBtn = document.getElementById('darkModeToggle');
+            if (toggleBtn) {
+                toggleBtn.textContent = isDark ? '☀️' : '🌙';
+            }
+            showNotificationMessage(isDark ? 'Dark mode activated 🌙' : 'Light mode activated ☀️', 'info');
+        }
+        
+        // ========== MOBILE MENU ==========
+        
+        function initMobileMenu() {
+            const menuBtn = document.getElementById('menuBtn');
+            const navMenu = document.getElementById('navMenu');
+            
+            if (menuBtn && navMenu) {
+                menuBtn.addEventListener('click', () => {
+                    navMenu.classList.toggle('active');
+                    const isActive = navMenu.classList.contains('active');
+                    menuBtn.setAttribute('aria-expanded', isActive);
+                });
+                
+                // Close menu on outside click
+                document.addEventListener('click', (e) => {
+                    if (!menuBtn.contains(e.target) && !navMenu.contains(e.target)) {
+                        navMenu.classList.remove('active');
+                        menuBtn.setAttribute('aria-expanded', 'false');
+                    }
+                });
+            }
+        }
+        
+        // ========== SCROLL TO TOP ==========
+        
+        function initScrollToTop() {
+            const scrollBtn = document.getElementById('scrollTop');
+            if (!scrollBtn) return;
+            
+            window.addEventListener('scroll', () => {
+                if (window.scrollY > 300) {
+                    scrollBtn.style.display = 'flex';
+                } else {
+                    scrollBtn.style.display = 'none';
+                }
+            });
+            
+            scrollBtn.addEventListener('click', () => {
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            });
+        }
+        
+        // ========== NEWSLETTER ==========
+        
+        function initNewsletter() {
+            const newsletterForm = document.getElementById('newsletterForm');
+            if (newsletterForm) {
+                newsletterForm.addEventListener('submit', (e) => {
+                    e.preventDefault();
+                    const input = newsletterForm.querySelector('input');
+                    if (input && input.value) {
+                        showNotificationMessage(`Subscribed with ${input.value}! Check your inbox.`, 'success');
+                        input.value = '';
+                    }
+                });
+            }
+        }
+        
+        // ========== CHECK INITIAL LOGIN STATE ON PAGE LOAD ==========
+        
+        function checkInitialLoginState() {
+            const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
+            
+            // Clean up any orphaned logoutEvent
+            if (localStorage.getItem('logoutEvent')) {
+                // If there was a logout event but isLoggedIn is still true, clean up
+                if (isLoggedIn) {
+                    localStorage.removeItem('isLoggedIn');
+                }
+                localStorage.removeItem('logoutEvent');
+            }
+            
+            return isLoggedIn;
+        }
+        
+        // ========== ADD ANIMATION STYLES ==========
+        
+        function addAnimationStyles() {
+            if (!document.getElementById('custom-animation-styles')) {
+                const style = document.createElement('style');
+                style.id = 'custom-animation-styles';
+                style.textContent = `
+                    @keyframes slideIn {
+                        from { transform: translateX(100%); opacity: 0; }
+                        to { transform: translateX(0); opacity: 1; }
+                    }
+                    @keyframes slideOut {
+                        from { transform: translateX(0); opacity: 1; }
+                        to { transform: translateX(100%); opacity: 0; }
+                    }
+                    .scroll-top {
+                        position: fixed;
+                        bottom: 30px;
+                        right: 30px;
+                        width: 45px;
+                        height: 45px;
+                        background: linear-gradient(135deg, #FF6B35, #7209B7);
+                        color: white;
+                        border: none;
+                        border-radius: 50%;
+                        cursor: pointer;
+                        display: none;
+                        align-items: center;
+                        justify-content: center;
+                        font-size: 1.3rem;
+                        z-index: 999;
+                        transition: all 0.3s ease;
+                    }
+                    .scroll-top:hover {
+                        transform: translateY(-5px);
+                    }
+                `;
+                document.head.appendChild(style);
+            }
+        }
+        
+        // ========== INITIALIZE EVERYTHING ==========
+        
+        document.addEventListener('DOMContentLoaded', function() {
+            addAnimationStyles();
+            initDarkMode();
+            initScrollToTop();
+            initMobileMenu();
+            initNewsletter();
+            
+            // Check initial login state
+            checkInitialLoginState();
+            
+            // Update navbar based on login status
+            checkLoginStatusAndUpdateNavbar();
+            
+            // Protect protected links
+            protectProtectedLinks();
+            
+            // Listen for logout events from other tabs
+            listenForLogoutFromOtherTabs();
+            
+            // Close modal when clicking outside
+            const modal = document.getElementById('logoutModal');
+            if (modal) {
+                modal.addEventListener('click', function(e) {
+                    if (e.target === modal) {
+                        closeLogoutModal();
+                    }
+                });
+            }
+        });
+        
+        // Make functions globally available
+        window.showLogoutConfirm = showLogoutConfirm;
+        window.closeLogoutModal = closeLogoutModal;
+        window.confirmLogout = confirmLogout;
+        window.toggleDarkMode = toggleDarkMode;
+        window.showNotificationMessage = showNotificationMessage;
+    </script>
+
+    <!-- Hero Section -->
+    <section class="hero-section">
+        <div class="hero-content">
+            <h1 class="hero-title">🍳 Sizzle & Share</h1>
+            <p class="hero-subtitle">"Cook, Capture, Challenge - Share Your Culinary Magic!"</p>
+            <div class="hero-buttons">
+                <a href="ingredients.html" class="btn btn-primary btn-lg" id="getStartedBtn">Get Started</a>
+                <a href="recipes.html" class="btn btn-outline btn-lg" style="border-color: white; color: white;" id="browseRecipesBtn">Browse Recipes</a>
+                <a href="challenge.html" class="btn btn-success btn-lg" id="joinChallengeBtn">Join Challenge</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Stats Section -->
+    <div class="container" style="max-width: 1200px; margin: -50px auto 0; position: relative; z-index: 2; padding: 0 20px;">
+        <div class="grid grid-4" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem;">
+            <div class="stat-card">
+                <div class="stat-number">10K+</div>
+                <div>Active Users</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">5K+</div>
+                <div>Recipes Shared</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">50+</div>
+                <div>Weekly Challenges</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">100K+</div>
+                <div>Total Likes</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Popular Recipes Section (same as before) -->
+    <!-- Popular Recipes Section -->
+<section class="section" style="padding: 4rem 2rem;">
+    <div class="container" style="max-width: 1200px; margin: 0 auto;">
+        <h2 class="text-center" style="margin-bottom: 3rem;">🔥 HOT THIS WEEK</h2>
+        <div class="grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 2rem;">
+            
+            <div class="recipe-card">
+                <div class="recipe-image"><img src="spaghetti carbonara.jfif" alt="Spaghetti Carbonara" style="width:100%; height:100%; object-fit:cover;"></div>
+                <div style="padding: 1.5rem;">
+                    <h3>Spaghetti Carbonara</h3>
+                    <div style="color: #FFE66D;">★★★★☆ (4.8)</div>
+                    <div style="color: var(--color-text-light); margin: 0.5rem 0;">❤️ 1.2k likes</div>
+                    <a href="recipes.html" class="btn btn-outline btn-sm">View Recipe</a>
+                </div>
+            </div>
+            
+            <div class="recipe-card">
+                <div class="recipe-image"><img src="margherita pizza.jfif" alt="Margherita Pizza" style="width:100%; height:100%; object-fit:cover;"></div>
+                <div style="padding: 1.5rem;">
+                    <h3>Margherita Pizza</h3>
+                    <div style="color: #FFE66D;">★★★★☆ (4.7)</div>
+                    <div style="color: var(--color-text-light); margin: 0.5rem 0;">❤️ 980 likes</div>
+                    <a href="recipes.html" class="btn btn-outline btn-sm">View Recipe</a>
+                </div>
+            </div>
+            
+            <div class="recipe-card">
+                <div class="recipe-image"><img src="greek salad.jfif" alt="Greek Salad" style="width:100%; height:100%; object-fit:cover;"></div>
+                <div style="padding: 1.5rem;">
+                    <h3>Greek Salad</h3>
+                    <div style="color: #FFE66D;">★★★★★ (4.9)</div>
+                    <div style="color: var(--color-text-light); margin: 0.5rem 0;">❤️ 2.1k likes</div>
+                    <a href="recipes.html" class="btn btn-outline btn-sm">View Recipe</a>
+                </div>
+            </div>
+            
+            <div class="recipe-card">
+                <div class="recipe-image"><img src="Chicken Stir Fry with Vegetables 30 Minutes Ultimate Delicious.jfif" alt="Chicken Stir Fry" style="width:100%; height:100%; object-fit:cover;"></div>
+                <div style="padding: 1.5rem;">
+                    <h3>Chicken Stir Fry</h3>
+                    <div style="color: #FFE66D;">★★★★☆ (4.6)</div>
+                    <div style="color: var(--color-text-light); margin: 0.5rem 0;">❤️ 750 likes</div>
+                    <a href="recipes.html" class="btn btn-outline btn-sm">View Recipe</a>
+                </div>
+            </div>
+        </div>
+        <div class="text-center" style="margin-top: 3rem;">
+            <a href="recipes.html" class="btn btn-primary">View All Popular Recipes →</a>
+        </div>
+    </div>
+</section>
+
+    <!-- Trending Challenges Section -->
+    <section class="section" style="padding: 4rem 2rem; background: var(--color-background-alt);">
+        <div class="container" style="max-width: 1200px; margin: 0 auto;">
+            <h2 class="text-center" style="margin-bottom: 3rem;">🏆 Weekly Challenges</h2>
+            <div class="grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 2rem;">
+                
+                <div class="challenge-card">
+                    <h3 style="color: var(--color-primary);">Pasta Paradise</h3>
+                    <p>Create the most delicious pasta dish!</p>
+                    <div>👥 234 joined</div>
+                    <div>⏳ <span class="countdown" data-days="3">3 days left</span></div>
+                    <a href="challenge.html" class="btn btn-primary btn-sm" style="margin-top: 1rem;">Join Now</a>
+                </div>
+                
+                <div class="challenge-card">
+                    <h3 style="color: var(--color-success);">Vegan Delight</h3>
+                    <p>Plant-based masterpiece competition</p>
+                    <div>👥 189 joined</div>
+                    <div>⏳ <span class="countdown" data-days="5">5 days left</span></div>
+                    <a href="challenge.html" class="btn btn-primary btn-sm" style="margin-top: 1rem;">Join Now</a>
+                </div>
+                
+                <div class="challenge-card">
+                    <h3 style="color: var(--color-purple);">Quick 15 min Meals</h3>
+                    <p>Fastest cooking competition</p>
+                    <div>👥 156 joined</div>
+                    <div>⏳ <span class="countdown" data-days="7">7 days left</span></div>
+                    <a href="challenge.html" class="btn btn-primary btn-sm" style="margin-top: 1rem;">Join Now</a>
+                </div>
+                
+                <div class="challenge-card">
+                    <h3 style="color: var(--color-pink);">Baking Masters</h3>
+                    <p>Show off your baking skills</p>
+                    <div>👥 98 joined</div>
+                    <div>⏳ <span class="countdown" data-days="10">10 days left</span></div>
+                    <a href="challenge.html" class="btn btn-primary btn-sm" style="margin-top: 1rem;">Join Now</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Top Chefs Section -->
+    <section class="section" style="padding: 4rem 2rem;">
+        <div class="container" style="max-width: 1200px; margin: 0 auto;">
+            <h2 class="text-center" style="margin-bottom: 3rem;">👨‍🍳 Top Chefs of the Month</h2>
+            <div class="grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 2rem;">
+                
+                <div class="chef-card">
+                    <div class="chef-avatar">👩‍🍳</div>
+                    <h3>Sarah Johnson</h3>
+                    <div><span class="medal">🥇</span> 1st Place</div>
+                    <div>45 dishes</div>
+                    <button class="btn btn-outline btn-sm" style="margin-top: 1rem;">Follow</button>
+                </div>
+                
+                <div class="chef-card">
+                    <div class="chef-avatar">🧑‍🍳</div>
+                    <h3>Ahmed Khan</h3>
+                    <div><span class="medal">🥈</span> 2nd Place</div>
+                    <div>38 dishes</div>
+                    <button class="btn btn-outline btn-sm" style="margin-top: 1rem;">Follow</button>
+                </div>
+                
+                <div class="chef-card">
+                    <div class="chef-avatar">👩‍🍳</div>
+                    <h3>Priya Sharma</h3>
+                    <div><span class="medal">🥉</span> 3rd Place</div>
+                    <div>32 dishes</div>
+                    <button class="btn btn-outline btn-sm" style="margin-top: 1rem;">Follow</button>
+                </div>
+                
+                <div class="chef-card">
+                    <div class="chef-avatar">🧑‍🍳</div>
+                    <h3>Carlos Mendez</h3>
+                    <div>🏅 4th Place</div>
+                    <div>28 dishes</div>
+                    <button class="btn btn-outline btn-sm" style="margin-top: 1rem;">Follow</button>
+                </div>
+            </div>
+            <div class="text-center" style="margin-top: 3rem;">
+                <a href="leaderboard.html" class="btn btn-primary">View Full Leaderboard →</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Featured Dishes Section -->
+    <section class="section" style="padding: 4rem 2rem; background: linear-gradient(135deg, #FFE8D6, #FFF9F0);">
+        <div class="container" style="max-width: 1200px; margin: 0 auto;">
+            <h2 class="text-center" style="margin-bottom: 3rem;">📸 Featured Community Dishes</h2>
+            <div class="grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem;">
+                
+                <div class="featured-dish">
+                    <div style="background: linear-gradient(135deg, #FF6B35, #FF8C5A); height: 200px; display: flex; align-items: center; justify-content: center; font-size: 4rem;">🍲</div>
+                    <div class="dish-overlay">
+                        <p>"Amazing pasta!"</p>
+                        <small>by @sarah ❤️ 234</small>
+                    </div>
+                </div>
+                
+                <div class="featured-dish">
+                    <div style="background: linear-gradient(135deg, #4ECDC4, #6EE0D8); height: 200px; display: flex; align-items: center; justify-content: center; font-size: 4rem;">🥘</div>
+                    <div class="dish-overlay">
+                        <p>"Best curry!"</p>
+                        <small>by @ahmed ❤️ 189</small>
+                    </div>
+                </div>
+                
+                <div class="featured-dish">
+                    <div style="background: linear-gradient(135deg, #7209B7, #8B2FC9); height: 200px; display: flex; align-items: center; justify-content: center; font-size: 4rem;">🍛</div>
+                    <div class="dish-overlay">
+                        <p>"My biryani"</p>
+                        <small>by @priya ❤️ 156</small>
+                    </div>
+                </div>
+                
+                <div class="featured-dish">
+                    <div style="background: linear-gradient(135deg, #EF476F, #F56A8A); height: 200px; display: flex; align-items: center; justify-content: center; font-size: 4rem;">🍣</div>
+                    <div class="dish-overlay">
+                        <p>"Fresh sushi!"</p>
+                        <small>by @ken ❤️ 98</small>
+                    </div>
+                </div>
+            </div>
+            <div class="text-center" style="margin-top: 3rem;">
+                <a href="gallery.html" class="btn btn-primary">View Full Gallery →</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- How It Works Section -->
+    <section class="section" style="padding: 4rem 2rem;">
+        <div class="container" style="max-width: 1200px; margin: 0 auto;">
+            <h2 class="text-center" style="margin-bottom: 3rem;">📋 How Sizzle & Share Works</h2>
+            <div class="grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 2rem;">
+                
+                <div class="step-card">
+                    <div class="step-number">1</div>
+                    <h3>Select Ingredients</h3>
+                    <p>Pick what you have at home</p>
+                </div>
+                
+                <div class="step-card">
+                    <div class="step-number">2</div>
+                    <h3>Get Recipes</h3>
+                    <p>Find recipes that match your items</p>
+                </div>
+                
+                <div class="step-card">
+                    <div class="step-number">3</div>
+                    <h3>Cook & Share</h3>
+                    <p>Cook amazing dish and share photo</p>
+                </div>
+                
+                <div class="step-card">
+                    <div class="step-number">4</div>
+                    <h3>Win Challenges</h3>
+                    <p>Compete and win exciting prizes</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-container">
+            <div class="footer-section">
+                <h3>🍳 Sizzle & Share</h3>
+                <p>Cook, Capture, Challenge - Share Your Culinary Magic!</p>
+                <div class="social-links">
+                    <a href="#" class="social-link">📷</a>
+                    <a href="#" class="social-link">📘</a>
+                    <a href="#" class="social-link">🐦</a>
+                    <a href="#" class="social-link">📌</a>
+                </div>
+            </div>
+            
+            <div class="footer-section">
+                <h4>Quick Links</h4>
+                <ul class="footer-links">
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="gallery.html">Gallery</a></li>
+                    <li><a href="leaderboard.html">Leaderboard</a></li>
+                    <li><a href="about.html">About</a></li>
+                </ul>
+            </div>
+            
+            <div class="footer-section">
+                <h4>Get Fresh Recipes</h4>
+                <form class="newsletter-form" id="newsletterForm">
+                    <input type="email" placeholder="Enter your email" class="newsletter-input" required>
+                    <button type="submit" class="newsletter-btn">Subscribe</button>
+                </form>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2025 Sizzle & Share. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <!-- Scroll to Top Button -->
+    <button class="scroll-top" id="scrollTop">↑</button>
+
+</body>
+</html>
