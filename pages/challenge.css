@@ -1,0 +1,79 @@
+/* Challenge Page */
+.challenge-hero {
+    text-align: center;
+    padding: 3.5rem 1.5rem 2.5rem;
+    background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-pink) 100%);
+    color: white;
+}
+
+.challenge-hero h1 {
+    font-size: clamp(2rem, 5vw, 3.5rem);
+    font-weight: 900;
+    margin-bottom: 0.75rem;
+}
+
+.challenge-hero p {
+    font-size: 1.1rem;
+    opacity: 0.9;
+    max-width: 580px;
+    margin: 0 auto;
+}
+
+.challenge-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 1.75rem;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 3rem 1.5rem 4rem;
+}
+
+.challenge-card {
+    background: white;
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    box-shadow: var(--shadow-md);
+    transition: transform var(--transition-normal), box-shadow var(--transition-normal);
+}
+
+.challenge-card:hover {
+    transform: translateY(-5px);
+    box-shadow: var(--shadow-xl);
+}
+
+.challenge-card-header {
+    padding: 1.5rem;
+    background: linear-gradient(135deg, var(--color-secondary), var(--color-purple));
+    color: white;
+}
+
+.challenge-card-header h3 {
+    font-size: 1.15rem;
+    font-weight: 800;
+    margin-bottom: 0.3rem;
+}
+
+.challenge-card-body {
+    padding: 1.25rem;
+}
+
+.challenge-deadline {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-size: 0.85rem;
+    color: var(--color-text-light);
+    margin-bottom: 1rem;
+}
+
+.challenge-prize {
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: var(--color-primary);
+    margin-bottom: 0.75rem;
+}
+
+.challenge-participants {
+    font-size: 0.85rem;
+    color: var(--color-text-light);
+}
