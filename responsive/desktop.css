@@ -1,0 +1,19 @@
+/* Desktop Styles - 769px and above */
+@media (min-width: 769px) {
+    .container {
+        max-width: 1200px;
+        margin: 0 auto;
+    }
+    
+    .grid-2 { grid-template-columns: repeat(2, 1fr); }
+    .grid-3 { grid-template-columns: repeat(3, 1fr); }
+    .grid-4 { grid-template-columns: repeat(4, 1fr); }
+    
+    .recipes-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+    
+    .ingredients-grid {
+        grid-template-columns: repeat(5, 1fr);
+    }
+}

@@ -1,0 +1,26 @@
+/* Tablet Styles - 481px to 768px */
+@media (min-width: 481px) and (max-width: 768px) {
+    /* Typography */
+    h1 { font-size: 2.5rem; }
+    h2 { font-size: 2rem; }
+    
+    /* Grid */
+    .grid, .recipes-grid {
+        grid-template-columns: repeat(2, 1fr) !important;
+    }
+    
+    .ingredients-grid {
+        grid-template-columns: repeat(3, 1fr) !important;
+    }
+    
+    /* Hero */
+    .hero-title { font-size: 2.5rem; }
+    
+    /* Flip Cards */
+    .flip-card { height: 380px; }
+    
+    /* Footer */
+    .footer-container {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
