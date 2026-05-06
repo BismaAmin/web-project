@@ -1,0 +1,582 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Recipes - Sizzle &amp; Share</title>
+    <link rel="stylesheet" href="css/main.css">
+    <style>
+        .recipes-hero {
+            background: linear-gradient(135deg, var(--color-secondary, #4ECDC4), #3a7bd5);
+            color: white;
+            padding: 4rem 2rem;
+            text-align: center;
+        }
+        .recipes-hero h1 { font-size: 2.5rem; margin-bottom: 0.75rem; }
+        .recipes-hero p  { font-size: 1.1rem; opacity: 0.9; }
+
+        .filters-bar {
+            background: white;
+            padding: 1rem 2rem;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.07);
+            position: sticky;
+            top: 70px;
+            z-index: 99;
+        }
+        .filters-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .filter-group {
+            display: flex;
+            gap: 0.5rem;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        .filter-group label { font-weight: 600; font-size: 0.9rem; }
+        .filter-select {
+            padding: 0.5rem 1rem;
+            border: 2px solid var(--color-border, #E8E8E8);
+            border-radius: 8px;
+            font-family: inherit;
+            cursor: pointer;
+            background: white;
+            color: var(--color-text, #2B2D42);
+        }
+        .selected-info {
+            font-size: 0.88rem;
+            background: #f0fff4;
+            border: 1px solid #06D6A0;
+            color: #065;
+            padding: 0.4rem 1rem;
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .clear-filter-btn {
+            background: #EF476F;
+            color: white;
+            border: none;
+            border-radius: 20px;
+            padding: 0.3rem 0.75rem;
+            font-size: 0.78rem;
+            cursor: pointer;
+        }
+        .recipes-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 2rem;
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 2rem;
+        }
+        /* 3D Flip Card */
+        .flip-card {
+            background-color: transparent;
+            width: 100%;
+            height: 420px;
+            perspective: 1000px;
+            cursor: pointer;
+        }
+        .flip-card-inner {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            text-align: center;
+            transition: transform 0.65s cubic-bezier(.4,0,.2,1);
+            transform-style: preserve-3d;
+            border-radius: 16px;
+        }
+        .flip-card:hover .flip-card-inner,
+        .flip-card.flipped .flip-card-inner {
+            transform: rotateY(180deg);
+        }
+        .flip-card-front, .flip-card-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            -webkit-backface-visibility: hidden;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+        }
+        .flip-card-front { background: white; }
+        .flip-card-back {
+            background: linear-gradient(135deg, #FF6B35, #7209B7);
+            color: white;
+            transform: rotateY(180deg);
+            padding: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            gap: 0.75rem;
+            overflow-y: auto;
+        }
+        .flip-card-back h3 { font-size: 1.2rem; margin-bottom: 0.25rem; }
+        .recipe-image {
+            height: 210px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 5rem;
+            overflow: hidden;
+            background: linear-gradient(135deg, #fff5f0, #ffe8d6);
+        }
+        .recipe-image img { width: 100%; height: 100%; object-fit: cover; }
+        .recipe-info { padding: 1rem 1.2rem; text-align: left; }
+        .recipe-info h3 { font-size: 1.1rem; font-weight: 700; margin-bottom: 0.5rem; color: #2B2D42; }
+        .recipe-meta {
+            display: flex;
+            gap: 0.75rem;
+            flex-wrap: wrap;
+            align-items: center;
+            margin-top: 0.5rem;
+        }
+        .recipe-meta span { font-size: 0.85rem; color: #666; }
+        .recipe-difficulty {
+            display: inline-block;
+            padding: 0.2rem 0.7rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 700;
+        }
+        .difficulty-easy   { background: #06D6A0; color: white; }
+        .difficulty-medium { background: #FFE66D; color: #333; }
+        .difficulty-hard   { background: #EF476F; color: white; }
+        .match-badge {
+            font-size: 0.72rem;
+            background: rgba(6,214,160,0.15);
+            color: #065;
+            border: 1px solid #06D6A0;
+            border-radius: 20px;
+            padding: 0.15rem 0.6rem;
+            font-weight: 600;
+        }
+        .recipe-steps-list {
+            text-align: left;
+            padding-left: 1rem;
+            font-size: 0.88rem;
+            line-height: 1.65;
+            flex: 1;
+            overflow-y: auto;
+        }
+        .recipe-steps-list li { margin-bottom: 0.35rem; }
+        .recipe-actions {
+            display: flex;
+            gap: 0.5rem;
+            margin-top: 0.5rem;
+            flex-wrap: wrap;
+        }
+        .no-results {
+            text-align: center;
+            padding: 4rem 2rem;
+            grid-column: 1/-1;
+        }
+        .no-results .no-icon { font-size: 4rem; margin-bottom: 1rem; }
+        .no-results h3 { font-size: 1.4rem; margin-bottom: 0.5rem; }
+        .no-results p { color: #888; margin-bottom: 1.5rem; }
+
+        /* Dark mode */
+        body.dark-mode .filters-bar { background: #16213e !important; }
+        body.dark-mode .filter-select { background: #0f0f1a; color: #e8e8e8; border-color: #2e3a52; }
+        body.dark-mode .flip-card-front { background: #16213e !important; }
+        body.dark-mode .recipe-info h3, body.dark-mode .recipe-info .recipe-meta span { color: #e8e8e8 !important; }
+        body.dark-mode .recipe-image { background: #0f0f1a !important; }
+
+        @media (max-width: 768px) {
+            .recipes-grid { grid-template-columns: 1fr; padding: 0 1rem; }
+            .filters-container { flex-direction: column; align-items: stretch; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- Navbar -->
+<nav class="navbar">
+    <div class="navbar-container">
+        <a href="index.html" class="navbar-logo">
+            <span class="logo-icon">🍳</span>
+            <span class="logo-text">Sizzle &amp; Share</span>
+        </a>
+        <button class="menu-btn" id="menuBtn" aria-label="Toggle menu" aria-expanded="false">
+            <span></span><span></span><span></span>
+        </button>
+        <ul class="nav-menu" id="navMenu">
+            <li class="nav-item"><a href="index.html" class="nav-link">Home</a></li>
+            <li class="nav-item"><a href="gallery.html" class="nav-link">Gallery</a></li>
+            <li class="nav-item"><a href="leaderboard.html" class="nav-link">Leaderboard</a></li>
+            <li class="nav-item"><a href="about.html" class="nav-link">About</a></li>
+            <li class="nav-item guest-only"><a href="login.html" class="btn btn-primary btn-sm">Login</a></li>
+            <li class="nav-item guest-only"><a href="signup.html" class="btn btn-outline btn-sm">Sign Up</a></li>
+            <li class="nav-item user-only user-dropdown" id="userDropdown">
+                <button class="user-dropdown-toggle" aria-haspopup="true" aria-expanded="false">
+                    <span class="user-avatar-badge">U</span>
+                    <span id="dropdownUsername">Account</span>
+                    <span class="dropdown-arrow">▼</span>
+                </button>
+                <div class="user-dropdown-menu" role="menu">
+                    <div class="dropdown-header">
+                        <div class="dropdown-header-name">Username</div>
+                        <div class="dropdown-header-email"></div>
+                    </div>
+                    <a href="user/dashboard.html" class="dropdown-item" role="menuitem"><span class="item-icon">📊</span> Dashboard</a>
+                    <a href="user/profile.html" class="dropdown-item" role="menuitem"><span class="item-icon">👤</span> My Profile</a>
+                    <a href="upload.html" class="dropdown-item" role="menuitem"><span class="item-icon">📸</span> Upload Photo</a>
+                    <a href="ingredients.html" class="dropdown-item" role="menuitem"><span class="item-icon">🥦</span> Ingredients</a>
+                    <a href="recipes.html" class="dropdown-item" role="menuitem"><span class="item-icon">📖</span> Recipes</a>
+                    <a href="challenge.html" class="dropdown-item" role="menuitem"><span class="item-icon">🏆</span> Challenge</a>
+                    <div class="dropdown-divider"></div>
+                    <button class="dropdown-item logout-item" onclick="logout()" role="menuitem"><span class="item-icon">🚪</span> Logout</button>
+                </div>
+            </li>
+            <li class="nav-item"><button class="theme-toggle" id="darkModeToggle" onclick="toggleDarkMode()">🌙</button></li>
+        </ul>
+    </div>
+</nav>
+
+<!-- Hero -->
+<div class="recipes-hero">
+    <h1>🍳 Recipes For You</h1>
+    <p id="heroSubtitle">Discover delicious recipes — select ingredients to get personalised suggestions</p>
+</div>
+
+<!-- Filters Bar -->
+<div class="filters-bar">
+    <div class="filters-container">
+        <div class="filter-group">
+            <label>Sort by:</label>
+            <select id="sortBy" class="filter-select">
+                <option value="default">Best Match</option>
+                <option value="time-asc">Fastest First</option>
+                <option value="time-desc">Longest First</option>
+                <option value="popular">Most Popular</option>
+            </select>
+        </div>
+        <div class="filter-group">
+            <label>Difficulty:</label>
+            <select id="difficultyFilter" class="filter-select">
+                <option value="all">All Levels</option>
+                <option value="Easy">Easy</option>
+                <option value="Medium">Medium</option>
+                <option value="Hard">Hard</option>
+            </select>
+        </div>
+        <div class="filter-group">
+            <label>Time:</label>
+            <select id="timeFilter" class="filter-select">
+                <option value="all">Any Time</option>
+                <option value="0-15">Under 15 min</option>
+                <option value="15-30">15–30 min</option>
+                <option value="30-60">30–60 min</option>
+                <option value="60+">60+ min</option>
+            </select>
+        </div>
+        <div id="selectedInfo" style="display:none;" class="filter-group">
+            <span class="selected-info">
+                <span id="selectedInfoText"></span>
+                <button class="clear-filter-btn" onclick="clearIngredientFilter()">✕ Clear</button>
+            </span>
+        </div>
+    </div>
+</div>
+
+<!-- Recipes Grid -->
+<div class="recipes-grid" id="recipesGrid">
+    <div style="grid-column:1/-1;text-align:center;padding:3rem;">
+        <div style="font-size:2rem;">⏳</div>
+        <p>Loading recipes…</p>
+    </div>
+</div>
+
+<!-- Footer -->
+<footer class="footer">
+    <div class="footer-container">
+        <div class="footer-section">
+            <h3>🍳 Sizzle &amp; Share</h3>
+            <p>Cook, Capture, Challenge — Share Your Culinary Magic!</p>
+        </div>
+        <div class="footer-section">
+            <h4>Quick Links</h4>
+            <ul class="footer-links">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="ingredients.html">Ingredients</a></li>
+                <li><a href="gallery.html">Gallery</a></li>
+            </ul>
+        </div>
+    </div>
+    <div class="footer-bottom"><p>&copy; 2025 Sizzle &amp; Share. All rights reserved.</p></div>
+</footer>
+
+<button class="scroll-top" id="scrollTop">↑</button>
+
+<script src="js/common.js"></script>
+<script>
+// =====================================================================
+// RECIPE DATA — ingredient IDs match ingredients.html:
+// 1=Tomato 2=Onion 3=Garlic 4=Chicken 5=Eggs 6=Milk 7=Flour 8=Rice
+// 9=Pasta 10=Cheese 11=Potato 12=Carrot 13=Bell Pepper 14=Olive Oil
+// 15=Salt 16=Black Pepper 17=Basil 18=Butter 19=Sugar 20=Beef
+// 21=Fish 22=Lemon 23=Yogurt 24=Honey 25=Cucumber 26=Mushroom
+// 27=Cinnamon 28=Paprika 29=Broccoli 30=Spinach
+// =====================================================================
+const FALLBACK_RECIPES = [
+    {
+        id: 1, name: 'Spaghetti Carbonara',
+        image: 'spaghetti carbonara.jfif',
+        time: 25, difficulty: 'Medium', likes: 1200,
+        ingredients: [2, 3, 5, 9, 10],
+        description: 'Classic Italian pasta with creamy egg and cheese sauce.',
+        steps: ['Boil pasta in well-salted water until al dente.', 'Fry pancetta or bacon until golden and crispy.', 'Whisk eggs with grated Parmesan and black pepper.', 'Drain pasta and mix immediately with egg mixture off the heat.', 'Add pancetta, toss well, and serve at once.']
+    },
+    {
+        id: 2, name: 'Margherita Pizza',
+        image: 'margherita pizza.jfif',
+        time: 40, difficulty: 'Hard', likes: 980,
+        ingredients: [1, 7, 10, 14, 17],
+        description: 'Simple and delicious pizza with tomato, mozzarella, and basil.',
+        steps: ['Make or buy pizza dough and let it rest 30 minutes.', 'Roll out dough and spread a thin layer of tomato sauce.', 'Tear fresh mozzarella over the base.', 'Drizzle with olive oil and scatter basil leaves.', 'Bake at 230 °C (450 °F) for 12–15 minutes until the crust is golden.']
+    },
+    {
+        id: 3, name: 'Greek Salad',
+        image: 'greek salad.jfif',
+        time: 15, difficulty: 'Easy', likes: 2100,
+        ingredients: [1, 2, 10, 14, 25],
+        description: 'Fresh Mediterranean salad with feta cheese, olives, and cucumber.',
+        steps: ['Roughly chop tomatoes, cucumber, and red onion.', 'Add kalamata olives and crumble feta cheese on top.', 'Drizzle generously with olive oil.', 'Season with dried oregano, salt, and pepper.', 'Serve immediately or chill for 10 minutes before serving.']
+    },
+    {
+        id: 4, name: 'Chicken Stir Fry',
+        image: 'Chicken Stir Fry with Vegetables 30 Minutes Ultimate Delicious.jfif',
+        time: 20, difficulty: 'Medium', likes: 1500,
+        ingredients: [2, 3, 4, 13, 14],
+        description: 'Quick and healthy chicken stir fry with colourful vegetables.',
+        steps: ['Cut chicken into thin strips; season with salt and pepper.', 'Heat olive oil in a wok or large frying pan until smoking.', 'Stir-fry chicken until golden — about 5 minutes.', 'Add bell pepper, onion, and garlic; cook 3 minutes more.', 'Splash with soy sauce and sesame oil; serve over rice.']
+    },
+    {
+        id: 5, name: 'Fluffy Omelette',
+        image: 'Easy Fluffy Omelette Recipe.jfif',
+        time: 10, difficulty: 'Easy', likes: 800,
+        ingredients: [5, 10, 18],
+        description: 'Light and fluffy French-style omelette, perfect for any meal.',
+        steps: ['Beat 3 eggs with a pinch of salt and pepper.', 'Melt butter in a non-stick pan over medium heat.', 'Pour in the eggs and swirl the pan gently.', 'Sprinkle cheese or chosen filling over one half.', 'Fold and slide onto a plate; serve immediately.']
+    },
+    {
+        id: 6, name: 'Garlic Butter Rice',
+        image: 'Garlic Butter Rice Recipe _ Fluffy, Buttery, Easy Side Dish.jfif',
+        time: 20, difficulty: 'Easy', likes: 650,
+        ingredients: [3, 8, 18],
+        description: 'Fluffy, flavour-packed rice — the perfect side dish.',
+        steps: ['Sauté minced garlic in butter over medium heat until fragrant.', 'Add rinsed rice and stir to coat every grain.', 'Pour in water or stock (2:1 ratio) and bring to a boil.', 'Reduce heat, cover, and simmer 15 minutes.', 'Fluff with a fork and garnish with fresh parsley.']
+    },
+    {
+        id: 7, name: 'Chocolate Cake',
+        image: 'chocolate cake.jfif',
+        time: 60, difficulty: 'Medium', likes: 3200,
+        ingredients: [5, 6, 7, 18, 19],
+        description: 'Rich and moist chocolate cake with silky frosting.',
+        steps: ['Preheat oven to 175 °C (350 °F). Grease and flour two cake tins.', 'Sift flour, cocoa, baking soda, and salt together.', 'Cream butter and sugar until pale and fluffy; beat in eggs one by one.', 'Fold in dry mixture alternately with milk until just combined.', 'Bake 30–35 minutes. Cool completely, then frost and serve.']
+    }
+];
+
+let selectedIngredients = [];
+let allRecipes = [...FALLBACK_RECIPES];
+
+// ── Load selected ingredients from storage ──────────────────
+function loadSelectedIngredients() {
+    try {
+        const saved = localStorage.getItem('selectedIngredients');
+        if (saved) selectedIngredients = JSON.parse(saved);
+    } catch (e) {
+        selectedIngredients = [];
+    }
+}
+
+// ── Try loading recipes from the PHP backend ─────────────────
+async function loadRecipesFromServer() {
+    try {
+        const qs = selectedIngredients.length > 0
+            ? '?ingredients=' + selectedIngredients.join(',')
+            : '';
+        const res = await fetch('php/get-recipes-public.php' + qs, { signal: AbortSignal.timeout(5000) });
+        if (!res.ok) throw new Error('bad response');
+        const json = await res.json();
+        if (json.success && Array.isArray(json.data) && json.data.length > 0) {
+            allRecipes = json.data.map(r => ({
+                id:          r.id,
+                name:        r.name,
+                image:       r.image || '',
+                image_path:  r.image_path || '',
+                time:        parseInt(r.time) || 30,
+                difficulty:  r.difficulty || 'Medium',
+                likes:       parseInt(r.likes) || 0,
+                description: r.description || '',
+                ingredients: Array.isArray(r.ingredients) ? r.ingredients : [],
+                steps:       r.steps ? r.steps.split('\n').filter(s => s.trim()) : ['Enjoy this dish!']
+            }));
+        }
+    } catch (_) {
+        // silently fall back to FALLBACK_RECIPES
+    }
+}
+
+// ── Filter helpers ───────────────────────────────────────────
+function matchScore(recipe) {
+    if (!selectedIngredients.length) return 1;
+    const matched = recipe.ingredients.filter(i => selectedIngredients.includes(i)).length;
+    return matched / Math.max(recipe.ingredients.length, 1);
+}
+
+function filterRecipes() {
+    let list = allRecipes.filter(r => {
+        // ingredient filter — show if ANY selected ingredient is present (or no filter)
+        if (selectedIngredients.length > 0) {
+            const hasMatch = r.ingredients.some(i => selectedIngredients.includes(i));
+            if (!hasMatch) return false;
+        }
+        // difficulty
+        const diff = document.getElementById('difficultyFilter').value;
+        if (diff !== 'all' && r.difficulty !== diff) return false;
+        // time
+        const t = document.getElementById('timeFilter').value;
+        if (t !== 'all') {
+            if (t === '60+' && r.time < 60) return false;
+            else if (t !== '60+') {
+                const [mn, mx] = t.split('-').map(Number);
+                if (r.time < mn || r.time > mx) return false;
+            }
+        }
+        return true;
+    });
+
+    const sort = document.getElementById('sortBy').value;
+    if (sort === 'popular')   list.sort((a, b) => b.likes - a.likes);
+    else if (sort === 'time-asc')  list.sort((a, b) => a.time - b.time);
+    else if (sort === 'time-desc') list.sort((a, b) => b.time - a.time);
+    else if (selectedIngredients.length > 0)
+        // default: sort by match score desc
+        list.sort((a, b) => matchScore(b) - matchScore(a));
+
+    return list;
+}
+
+// ── Rendering ────────────────────────────────────────────────
+function imageHTML(recipe) {
+    const img = recipe.image || '';
+    // If it looks like an emoji (no dot, short), use it directly
+    if (!img.includes('.') && img.length <= 4) return img;
+    // Otherwise render as img tag
+    return `<img src="${img}" alt="${recipe.name}" onerror="this.parentElement.textContent='🍲'">`;
+}
+
+function stepsHTML(recipe) {
+    const steps = Array.isArray(recipe.steps) ? recipe.steps : String(recipe.steps).split('\n');
+    return steps.filter(s => s.trim()).map(s => `<li>${s.replace(/^\d+\.\s*/, '')}</li>`).join('');
+}
+
+function renderRecipes() {
+    const grid = document.getElementById('recipesGrid');
+    const list = filterRecipes();
+
+    if (list.length === 0) {
+        grid.innerHTML = `
+            <div class="no-results" style="grid-column:1/-1;">
+                <div class="no-icon">😢</div>
+                <h3>No recipes found</h3>
+                <p>Try selecting different ingredients or adjusting your filters.</p>
+                <a href="ingredients.html" class="btn btn-primary">Choose Ingredients</a>
+            </div>`;
+        return;
+    }
+
+    grid.innerHTML = list.map(recipe => {
+        const score = matchScore(recipe);
+        const matchBadge = selectedIngredients.length > 0
+            ? `<span class="match-badge">✓ ${Math.round(score * 100)}% match</span>`
+            : '';
+        return `
+        <div class="flip-card" title="Hover to see instructions">
+            <div class="flip-card-inner">
+                <div class="flip-card-front">
+                    <div class="recipe-image">${imageHTML(recipe)}</div>
+                    <div class="recipe-info">
+                        <h3>${recipe.name}</h3>
+                        <p style="font-size:0.83rem;color:#888;margin-bottom:0.5rem;">${recipe.description || ''}</p>
+                        <div class="recipe-meta">
+                            <span>⏱ ${recipe.time} min</span>
+                            <span class="recipe-difficulty difficulty-${recipe.difficulty.toLowerCase()}">${recipe.difficulty}</span>
+                            <span>❤️ ${recipe.likes.toLocaleString()}</span>
+                            ${matchBadge}
+                        </div>
+                    </div>
+                </div>
+                <div class="flip-card-back">
+                    <h3>📖 How to Make It</h3>
+                    <ol class="recipe-steps-list">${stepsHTML(recipe)}</ol>
+                    <div class="recipe-actions">
+                        <button class="btn" style="background:rgba(255,255,255,0.2);color:white;border:1px solid rgba(255,255,255,0.5);border-radius:20px;" onclick="saveRecipeToFav(${recipe.id}, event)">❤️ Save</button>
+                        <button class="btn" style="background:white;color:#FF6B35;border-radius:20px;" onclick="cookThis(${recipe.id}, event)">👨‍🍳 Cook This</button>
+                    </div>
+                </div>
+            </div>
+        </div>`;
+    }).join('');
+}
+
+function updateSelectedInfo() {
+    const info = document.getElementById('selectedInfo');
+    const txt  = document.getElementById('selectedInfoText');
+    const sub  = document.getElementById('heroSubtitle');
+    if (selectedIngredients.length > 0) {
+        info.style.display = 'flex';
+        txt.textContent = `Filtering by ${selectedIngredients.length} ingredient${selectedIngredients.length > 1 ? 's' : ''}`;
+        sub.textContent = `Showing recipes that match your ${selectedIngredients.length} selected ingredient${selectedIngredients.length > 1 ? 's' : ''}`;
+    } else {
+        info.style.display = 'none';
+        sub.textContent = 'Discover delicious recipes — select ingredients to get personalised suggestions';
+    }
+}
+
+function clearIngredientFilter() {
+    selectedIngredients = [];
+    localStorage.removeItem('selectedIngredients');
+    updateSelectedInfo();
+    renderRecipes();
+}
+
+function saveRecipeToFav(id, e) {
+    e.stopPropagation();
+    if (typeof showNotification === 'function') showNotification('Recipe saved to favourites! ❤️', 'success');
+}
+
+function cookThis(id, e) {
+    e.stopPropagation();
+    if (typeof showNotification === 'function') showNotification('Great choice! Time to get cooking! 👨‍🍳', 'success');
+}
+
+// ── Init ─────────────────────────────────────────────────────
+async function init() {
+    loadSelectedIngredients();
+    updateSelectedInfo();
+
+    // Try to load from server (graceful fallback to hardcoded data)
+    await loadRecipesFromServer();
+
+    renderRecipes();
+
+    ['sortBy', 'difficultyFilter', 'timeFilter'].forEach(id => {
+        document.getElementById(id).addEventListener('change', renderRecipes);
+    });
+}
+
+init();
+</script>
+
+</body>
+</html>

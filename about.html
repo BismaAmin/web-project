@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About Us - Sizzle &amp; Share</title>
+    <link rel="stylesheet" href="css/main.css">
+    <style>
+        /* Fix navbar to match gallery */
+        .navbar {
+            padding-left: 0 !important;
+            padding-right: 0 !important;
+        }
+        .navbar .navbar-container {
+            max-width: 1200px !important;
+            margin-left: auto !important;
+            margin-right: auto !important;
+            padding-left: 1.5rem !important;
+            padding-right: 1.5rem !important;
+        }
+
+        /* ── Page Layout ── */
+        .about-page-wrapper {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 1.5rem 4rem;
+        }
+
+        /* ── Stats ── */
+        .stats-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 1.25rem;
+            margin: -2rem 0 3rem;
+            position: relative;
+            z-index: 2;
+        }
+
+        /* ── Mission ── */
+        .mission-block {
+            background: linear-gradient(135deg, #fff8f5, #fff);
+            border-left: 4px solid #FF6B35;
+            border-radius: 12px;
+            padding: 2rem 2.5rem;
+            margin-bottom: 3.5rem;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.05);
+        }
+        .mission-block h2 {
+            color: #FF6B35;
+            margin-bottom: 1rem;
+        }
+        .mission-block p {
+            color: #555;
+            line-height: 1.75;
+            margin-bottom: 0.75rem;
+        }
+
+        /* ── Team Section ── */
+        .team-heading {
+            text-align: center;
+            font-size: 2rem;
+            font-weight: 800;
+            color: #1a1a2e;
+            margin-bottom: 0.4rem;
+        }
+        .team-subheading {
+            text-align: center;
+            color: #888;
+            margin-bottom: 2.5rem;
+            font-size: 1rem;
+        }
+        .team-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 1.75rem;
+            justify-items: center;
+        }
+
+        /* ── Team Card ── */
+        .team-card {
+            background: #fff;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.07);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            cursor: pointer;
+            width: 100%;
+            max-width: 270px;
+            border: none;
+        }
+        .team-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 16px 40px rgba(0,0,0,0.13);
+        }
+
+        /* ── Avatar Banner ── */
+        .card-avatar-banner {
+            height: 155px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+        .avatar-photo {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            border: 4px solid rgba(255,255,255,0.9);
+            box-shadow: 0 6px 24px rgba(0,0,0,0.3);
+            object-fit: cover;
+            display: block;
+        }
+
+        /* ── Card Body ── */
+        .card-body-inner {
+            padding: 1.4rem 1.5rem 1.6rem;
+            text-align: center;
+        }
+        .card-name {
+            font-size: 1.1rem;
+            font-weight: 800;
+            color: #1a1a2e;
+            margin-bottom: 0.3rem;
+        }
+        .card-role {
+            font-size: 0.78rem;
+            color: #7209B7;
+            font-weight: 600;
+            margin-bottom: 0.9rem;
+            line-height: 1.4;
+        }
+        .card-desc {
+            font-size: 0.83rem;
+            color: #666;
+            line-height: 1.55;
+            margin-bottom: 1.1rem;
+        }
+        .btn-view-profile {
+            display: inline-block;
+            background: linear-gradient(135deg, #FF6B35, #7209B7);
+            color: #fff;
+            border: none;
+            border-radius: 30px;
+            padding: 0.5rem 1.3rem;
+            font-size: 0.82rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: opacity 0.2s, transform 0.2s;
+            text-decoration: none;
+        }
+        .btn-view-profile:hover {
+            opacity: 0.88;
+            transform: scale(1.04);
+        }
+
+        /* ── Modal ── */
+        .portfolio-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.55);
+            z-index: 3000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1.5rem;
+            overflow-y: auto;
+        }
+        .portfolio-modal {
+            background: #fff;
+            border-radius: 24px;
+            max-width: 620px;
+            width: 100%;
+            overflow: hidden;
+            animation: modalSlideUp 0.3s ease;
+        }
+        @keyframes modalSlideUp {
+            from { transform: translateY(40px); opacity: 0; }
+            to   { transform: translateY(0);    opacity: 1; }
+        }
+        .modal-header-band {
+            padding: 2rem 2rem 1.5rem;
+            color: #fff;
+            text-align: center;
+            position: relative;
+        }
+        .modal-close-btn {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: rgba(255,255,255,0.2);
+            border: none;
+            color: #fff;
+            font-size: 1.4rem;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            cursor: pointer;
+            line-height: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .modal-avatar-wrap {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 0.75rem;
+        }
+        .modal-avatar-wrap svg {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            border: 3px solid rgba(255,255,255,0.5);
+            box-shadow: 0 4px 14px rgba(0,0,0,0.2);
+        }
+        .modal-name { font-size: 1.45rem; font-weight: 800; margin: 0 0 0.2rem; }
+        .modal-role { font-size: 0.9rem; opacity: 0.85; margin: 0; }
+        .modal-body-scroll {
+            padding: 1.75rem 2rem;
+            max-height: 58vh;
+            overflow-y: auto;
+        }
+        .modal-section { margin-bottom: 1.4rem; }
+        .modal-section h5 {
+            color: #FF6B35;
+            font-weight: 800;
+            font-size: 0.92rem;
+            margin-bottom: 0.5rem;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+        }
+        .modal-section p, .modal-section li { color: #555; font-size: 0.88rem; line-height: 1.65; }
+        .modal-section ul { padding-left: 1.2rem; }
+        .tag-list { display: flex; flex-wrap: wrap; gap: 0.4rem; }
+        .tag {
+            background: #f3eaff;
+            color: #7209B7;
+            padding: 0.3rem 0.85rem;
+            border-radius: 20px;
+            font-size: 0.78rem;
+            font-weight: 700;
+        }
+        .modal-footer-row {
+            padding: 1rem 1.5rem;
+            border-top: 1px solid #eee;
+            text-align: right;
+        }
+        .contact-row { display: flex; flex-direction: column; gap: 0.35rem; }
+        .contact-row span { font-size: 0.86rem; color: #555; }
+
+        /* ── About content no bottom pad override ── */
+        .about-content { padding-bottom: 0 !important; }
+    </style>
+</head>
+<body>
+
+<!-- Navbar -->
+<nav class="navbar">
+    <div class="navbar-container">
+        <a href="index.html" class="navbar-logo">
+            <span class="logo-icon">🍳</span>
+            <span class="logo-text">Sizzle &amp; Share</span>
+        </a>
+        <button class="menu-btn" id="menuBtn" aria-label="Toggle menu" aria-expanded="false">
+            <span></span><span></span><span></span>
+        </button>
+        <ul class="nav-menu" id="navMenu">
+            <li class="nav-item"><a href="index.html" class="nav-link">Home</a></li>
+            <li class="nav-item"><a href="gallery.html" class="nav-link">Gallery</a></li>
+            <li class="nav-item"><a href="leaderboard.html" class="nav-link">Leaderboard</a></li>
+            <li class="nav-item"><a href="about.html" class="nav-link active">About</a></li>
+            <li class="nav-item guest-only"><a href="login.html" class="btn btn-primary btn-sm">Login</a></li>
+            <li class="nav-item guest-only"><a href="signup.html" class="btn btn-outline btn-sm">Sign Up</a></li>
+            <li class="nav-item user-only user-dropdown" id="userDropdown">
+                <button class="user-dropdown-toggle" aria-haspopup="true" aria-expanded="false">
+                    <span class="user-avatar-badge">U</span>
+                    <span id="dropdownUsername">Account</span>
+                    <span class="dropdown-arrow">▼</span>
+                </button>
+                <div class="user-dropdown-menu" role="menu">
+                    <div class="dropdown-header">
+                        <div class="dropdown-header-name">Username</div>
+                        <div class="dropdown-header-email"></div>
+                    </div>
+                    <a href="user/dashboard.html" class="dropdown-item" role="menuitem"><span class="item-icon">📊</span> Dashboard</a>
+                    <a href="user/profile.html" class="dropdown-item" role="menuitem"><span class="item-icon">👤</span> My Profile</a>
+                    <a href="upload.html" class="dropdown-item" role="menuitem"><span class="item-icon">📸</span> Upload Photo</a>
+                    <a href="ingredients.html" class="dropdown-item" role="menuitem"><span class="item-icon">🥦</span> Ingredients</a>
+                    <a href="recipes.html" class="dropdown-item" role="menuitem"><span class="item-icon">📖</span> Recipes</a>
+                    <a href="challenge.html" class="dropdown-item" role="menuitem"><span class="item-icon">🏆</span> Challenge</a>
+                    <div class="dropdown-divider"></div>
+                    <button class="dropdown-item logout-item" onclick="logout()" role="menuitem"><span class="item-icon">🚪</span> Logout</button>
+                </div>
+            </li>
+            <li class="nav-item"><button class="theme-toggle" id="darkModeToggle" onclick="toggleDarkMode()">🌙</button></li>
+        </ul>
+    </div>
+</nav>
+
+<!-- Hero -->
+<section class="about-hero">
+    <h1>About Sizzle &amp; Share</h1>
+    <p>Cook, Capture, Challenge — Share Your Culinary Magic!</p>
+</section>
+
+<!-- Page Wrapper -->
+<div class="about-page-wrapper">
+
+    <!-- Stats -->
+    <div class="stats-row">
+        <div class="stat-card"><div class="stat-number">50+</div><div>Registered Users</div></div>
+        <div class="stat-card"><div class="stat-number">30+</div><div>Recipes Added</div></div>
+        <div class="stat-card"><div class="stat-number">4</div><div>Active Challenges</div></div>
+        <div class="stat-card"><div class="stat-number">4</div><div>Team Members</div></div>
+    </div>
+
+    <!-- Mission -->
+    <div class="mission-block">
+        <h2>Our Mission</h2>
+        <p>Sizzle &amp; Share is a community platform where home chefs, food lovers, and culinary enthusiasts come together to share their creations, discover new recipes, and compete in weekly cooking challenges.</p>
+        <p>We believe great food is meant to be shared. Whether you're a seasoned chef or just learning to cook, this is your space to express creativity and inspire others.</p>
+    </div>
+
+    <!-- Meet Our Team -->
+        <!-- Meet Our Team -->
+    <h2 class="team-heading">Meet Our Team</h2>
+    <p class="team-subheading">The student developers who built Sizzle &amp; Share</p>
+
+    <div class="team-grid">
+
+        <!-- Amna Luqman -->
+        <a href="portfolio-amna.html" class="team-card" style="text-decoration:none;color:inherit;">
+            <div class="card-avatar-banner" style="background: linear-gradient(135deg, #FF6B35, #7209B7);">
+                <img class="avatar-photo" src="https://i.pravatar.cc/150?img=47" alt="Amna Luqman">
+            </div>
+            <div class="card-body-inner">
+                <div class="card-name">Amna Luqman</div>
+                <div class="card-role">Lead Developer · UI Specialist</div>
+                <p class="card-desc">Handled homepage design, user authentication, dashboard, and profile pages.</p>
+                <span class="btn-view-profile">View Portfolio</span>
+            </div>
+        </a>
+
+        <!-- Areeba Noor -->
+        <a href="portfolio-areeba.html" class="team-card" style="text-decoration:none;color:inherit;">
+            <div class="card-avatar-banner" style="background: linear-gradient(135deg, #4ECDC4, #7209B7);">
+                <img class="avatar-photo" src="https://i.pravatar.cc/150?img=44" alt="Areeba Noor">
+            </div>
+            <div class="card-body-inner">
+                <div class="card-name">Areeba Noor</div>
+                <div class="card-role">Frontend Developer · Animations Specialist</div>
+                <p class="card-desc">Built the ingredients page, recipe filters, 3D card animations, and the About page.</p>
+                <span class="btn-view-profile">View Portfolio</span>
+            </div>
+        </a>
+
+        <!-- Arooj Fatima -->
+        <a href="portfolio-arooj.html" class="team-card" style="text-decoration:none;color:inherit;">
+            <div class="card-avatar-banner" style="background: linear-gradient(135deg, #06D6A0, #7209B7);">
+                <img class="avatar-photo" src="https://i.pravatar.cc/150?img=49" alt="Arooj Fatima">
+            </div>
+            <div class="card-body-inner">
+                <div class="card-name">Arooj Fatima</div>
+                <div class="card-role">Backend Developer · Database Specialist</div>
+                <p class="card-desc">Designed the database schema, built the upload system, gallery, and like functionality.</p>
+                <span class="btn-view-profile">View Portfolio</span>
+            </div>
+        </a>
+
+        <!-- Bisma Amin -->
+        <a href="portfolio-bisma.html" class="team-card" style="text-decoration:none;color:inherit;">
+            <div class="card-avatar-banner" style="background: linear-gradient(135deg, #F72585, #7209B7);">
+                <img class="avatar-photo" src="https://i.pravatar.cc/150?img=5" alt="Bisma Amin">
+            </div>
+            <div class="card-body-inner">
+                <div class="card-name">Bisma Amin</div>
+                <div class="card-role">Full Stack Developer · Testing &amp; Documentation</div>
+                <p class="card-desc">Implemented the challenge system, leaderboard, logout, and wrote project documentation.</p>
+                <span class="btn-view-profile">View Portfolio</span>
+            </div>
+        </a>
+
+    </div>
+    
+    <!-- /team-grid -->
+</div><!-- /about-page-wrapper -->
+
+<!-- Footer -->
+<footer class="footer">
+    <div class="footer-container">
+        <div class="footer-section">
+            <h3>🍳 Sizzle &amp; Share</h3>
+            <p>Cook, Capture, Challenge - Share Your Culinary Magic!</p>
+            <div class="social-links">
+                <a href="#" class="social-link">📷</a>
+                <a href="#" class="social-link">📘</a>
+                <a href="#" class="social-link">🐦</a>
+            </div>
+        </div>
+        <div class="footer-section">
+            <h4>Quick Links</h4>
+            <ul class="footer-links">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="recipes.html">Recipes</a></li>
+                <li><a href="challenge.html">Challenges</a></li>
+                <li><a href="leaderboard.html">Leaderboard</a></li>
+            </ul>
+        </div>
+        <div class="footer-section">
+            <h4>Get Fresh Recipes</h4>
+            <form id="newsletterForm" style="display:flex;gap:0.5rem;flex-wrap:wrap;">
+                <input type="email" placeholder="Your email" style="flex:1;min-width:140px;padding:0.6rem 1rem;border:2px solid rgba(255,255,255,0.2);border-radius:var(--radius-full);background:rgba(255,255,255,0.1);color:white;">
+                <button type="submit" class="btn btn-primary btn-sm">Subscribe</button>
+            </form>
+        </div>
+    </div>
+    <div class="footer-bottom"><p>&copy; 2025 Sizzle &amp; Share. All rights reserved.</p></div>
+</footer>
+
+<button class="scroll-top" id="scrollTop">↑</button>
+<script src="js/common.js"></script>
+
+<script>
+    // Cross-tab logout: if another tab logs out, update this page too
+    window.addEventListener('storage', function(e) {
+        if (e.key === 'isLoggedIn' && e.newValue !== 'true') {
+            updateNavbar();
+        }
+        if (e.key === 'logoutEvent') {
+            localStorage.removeItem('isLoggedIn');
+            localStorage.removeItem('username');
+            localStorage.removeItem('userEmail');
+            updateNavbar();
+        }
+    });
+</script>
+
+</body>
+</html>

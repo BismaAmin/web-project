@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Community Gallery - Sizzle & Share</title>
+    <link rel="stylesheet" href="css/main.css">
+    <style>
+        .gallery-hero {
+            background: linear-gradient(135deg, var(--color-purple), var(--color-pink));
+            color: white;
+            padding: 4rem 2rem;
+            text-align: center;
+        }
+        
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 1.5rem;
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 2rem;
+        }
+        
+        .gallery-item {
+            background: white;
+            border-radius: var(--radius-lg);
+            overflow: hidden;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: var(--shadow-md);
+        }
+        
+        .gallery-item:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-xl);
+        }
+        
+        .gallery-image {
+            height: 250px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 5rem;
+            background: linear-gradient(135deg, var(--color-secondary), #4895EF);
+        }
+        
+        .gallery-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .gallery-info {
+            padding: 1rem;
+        }
+        
+        .like-btn {
+            background: none;
+            border: none;
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: transform 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            border-radius: var(--radius-full);
+        }
+        
+        .like-btn:hover {
+            transform: scale(1.1);
+            background: rgba(0,0,0,0.05);
+        }
+        
+        .like-btn.liked {
+            color: var(--color-danger);
+        }
+        
+        .load-more {
+            text-align: center;
+            margin: 2rem auto;
+        }
+        
+        .loading {
+            text-align: center;
+            padding: 2rem;
+            font-size: 1.2rem;
+        }
+        
+        .empty-gallery {
+            text-align: center;
+            padding: 3rem;
+            font-size: 1.2rem;
+            color: var(--color-text-light);
+        }
+        
+        .filter-bar {
+            max-width: 1200px;
+            margin: 1rem auto;
+            padding: 0 2rem;
+            display: flex;
+            gap: 1rem;
+            justify-content: flex-end;
+        }
+        
+        .sort-select {
+            padding: 0.5rem 1rem;
+            border: 2px solid var(--color-border);
+            border-radius: var(--radius-md);
+            font-family: inherit;
+            cursor: pointer;
+        }
+        
+        @media (max-width: 768px) {
+            .gallery-grid {
+                grid-template-columns: 1fr;
+                padding: 0 1rem;
+            }
+            .filter-bar {
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="navbar-container">
+            <a href="index.html" class="navbar-logo">
+                <span class="logo-icon">🍳</span>
+                <span class="logo-text">Sizzle &amp; Share</span>
+            </a>
+            <button class="menu-btn" id="menuBtn" aria-label="Toggle menu" aria-expanded="false">
+                <span></span><span></span><span></span>
+            </button>
+            <ul class="nav-menu" id="navMenu">
+                <!-- Public links always visible -->
+                <li class="nav-item"><a href="index.html" class="nav-link">Home</a></li>
+                <li class="nav-item"><a href="gallery.html" class="nav-link active">Gallery</a></li>
+                <li class="nav-item"><a href="leaderboard.html" class="nav-link">Leaderboard</a></li>
+                <li class="nav-item"><a href="about.html" class="nav-link">About</a></li>
+                <!-- Guest only: shown when NOT logged in -->
+                <li class="nav-item guest-only"><a href="login.html" class="btn btn-primary btn-sm">Login</a></li>
+                <li class="nav-item guest-only"><a href="signup.html" class="btn btn-outline btn-sm">Sign Up</a></li>
+                <!-- User dropdown: shown ONLY when logged in -->
+                <li class="nav-item user-only user-dropdown" id="userDropdown">
+                    <button class="user-dropdown-toggle" aria-haspopup="true" aria-expanded="false">
+                        <span class="user-avatar-badge">U</span>
+                        <span id="dropdownUsername">Account</span>
+                        <span class="dropdown-arrow">▼</span>
+                    </button>
+                    <div class="user-dropdown-menu" role="menu">
+                        <div class="dropdown-header">
+                            <div class="dropdown-header-name">Username</div>
+                            <div class="dropdown-header-email"></div>
+                        </div>
+                        <a href="user/dashboard.html" class="dropdown-item" role="menuitem"><span class="item-icon">📊</span> Dashboard</a>
+                        <a href="user/profile.html" class="dropdown-item" role="menuitem"><span class="item-icon">👤</span> My Profile</a>
+                        <a href="upload.html" class="dropdown-item" role="menuitem"><span class="item-icon">📸</span> Upload Photo</a>
+                        <a href="ingredients.html" class="dropdown-item" role="menuitem"><span class="item-icon">🥦</span> Ingredients</a>
+                        <a href="recipes.html" class="dropdown-item" role="menuitem"><span class="item-icon">📖</span> Recipes</a>
+                        <a href="challenge.html" class="dropdown-item" role="menuitem"><span class="item-icon">🏆</span> Challenge</a>
+                        <div class="dropdown-divider"></div>
+                        <button class="dropdown-item logout-item" onclick="logout()" role="menuitem"><span class="item-icon">🚪</span> Logout</button>
+                    </div>
+                </li>
+                <li class="nav-item"><button class="theme-toggle" id="darkModeToggle" onclick="toggleDarkMode()">🌙</button></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <div class="gallery-hero">
+        <h1>📸 Community Gallery</h1>
+        <p>See what others are cooking and get inspired!</p>
+    </div>
+
+    <!-- Filter Bar -->
+    <div class="filter-bar">
+        <select id="sortGallery" class="sort-select">
+            <option value="latest">Latest First</option>
+            <option value="oldest">Oldest First</option>
+            <option value="mostLiked">Most Liked</option>
+        </select>
+    </div>
+
+    <!-- Gallery Grid -->
+    <div class="gallery-grid" id="galleryGrid">
+        <div class="loading">Loading gallery...</div>
+    </div>
+
+    <div class="load-more">
+        <button class="btn btn-outline" id="loadMoreBtn" style="display: none;">Load More 🍽️</button>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-container">
+            <div class="footer-section">
+                <h3>🍳 Sizzle & Share</h3>
+                <p>Cook, Capture, Challenge - Share Your Culinary Magic!</p>
+                <div class="social-links">
+                    <a href="#" class="social-link">📷</a>
+                    <a href="#" class="social-link">📘</a>
+                    <a href="#" class="social-link">🐦</a>
+                    <a href="#" class="social-link">📌</a>
+                </div>
+            </div>
+            <div class="footer-section">
+                <h4>Quick Links</h4>
+                <ul class="footer-links">
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="gallery.html">Gallery</a></li>
+                    <li><a href="leaderboard.html">Leaderboard</a></li>
+                    <li><a href="about.html">About</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h4>Get Fresh Recipes</h4>
+                <form class="newsletter-form" id="newsletterForm">
+                    <input type="email" placeholder="Enter your email" class="newsletter-input" required>
+                    <button type="submit" class="newsletter-btn">Subscribe</button>
+                </form>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2025 Sizzle & Share. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <!-- Scroll to Top Button -->
+    <button class="scroll-top" id="scrollTop">↑</button>
+
+    <script src="js/common.js"></script>
+    <script>
+        let galleryItems = [];
+        let likedItems = [];
+        let visibleItems = 6;
+        let currentSort = 'latest';
+        
+        async function loadGallery() {
+            const grid = document.getElementById('galleryGrid');
+            grid.innerHTML = '<div class="loading">Loading gallery...</div>';
+            
+            try {
+                const response = await fetch('php/get-gallery.php');
+                const result = await response.json();
+                
+                if (result.success && result.data) {
+                    galleryItems = result.data;
+                    loadLikedItems();
+                    sortAndRenderGallery();
+                } else {
+                    grid.innerHTML = '<div class="empty-gallery">📭 No dishes uploaded yet. Be the first to <a href="upload.html">share your dish</a>!</div>';
+                }
+            } catch (error) {
+                console.error('Error loading gallery:', error);
+                grid.innerHTML = '<div class="empty-gallery">❌ Error loading gallery. Please try again later.</div>';
+            }
+        }
+        
+        function loadLikedItems() {
+            const saved = localStorage.getItem('galleryLikedItems');
+            if (saved) {
+                likedItems = JSON.parse(saved);
+            }
+        }
+        
+        function saveLikedItems() {
+            localStorage.setItem('galleryLikedItems', JSON.stringify(likedItems));
+        }
+        
+        function sortAndRenderGallery() {
+            let sorted = [...galleryItems];
+            
+            if (currentSort === 'latest') {
+                sorted.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+            } else if (currentSort === 'oldest') {
+                sorted.sort((a, b) => new Date(a.created_at) - new Date(b.created_at));
+            } else if (currentSort === 'mostLiked') {
+                sorted.sort((a, b) => b.likes - a.likes);
+            }
+            
+            renderGallery(sorted);
+        }
+        
+        async function toggleLike(id, buttonElement) {
+            const isLiked = likedItems.includes(id);
+            const action = isLiked ? 'unlike' : 'like';
+            
+            try {
+                const formData = new URLSearchParams();
+                formData.append('upload_id', id);
+                formData.append('action', action);
+                
+                const response = await fetch('php/like-upload.php', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                    body: formData
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    if (action === 'like') {
+                        likedItems.push(id);
+                        showNotification('Liked! ❤️', 'success');
+                    } else {
+                        likedItems = likedItems.filter(i => i !== id);
+                        showNotification('Like removed', 'info');
+                    }
+                    saveLikedItems();
+                    
+                    const likeSpan = buttonElement.querySelector('.like-count');
+                    if (likeSpan) likeSpan.textContent = result.likes;
+                    
+                    const item = galleryItems.find(i => i.id === id);
+                    if (item) item.likes = result.likes;
+                    
+                    if (action === 'like') {
+                        buttonElement.classList.add('liked');
+                    } else {
+                        buttonElement.classList.remove('liked');
+                    }
+                }
+            } catch (error) {
+                showNotification('Please login to like', 'error');
+            }
+        }
+        
+        function shareDish(dish) {
+            navigator.clipboard.writeText(`Check out "${dish}" on Sizzle & Share! 🍳`);
+            showNotification('Share link copied!', 'success');
+        }
+        
+        function renderGallery(itemsToShow) {
+            const grid = document.getElementById('galleryGrid');
+            const items = itemsToShow.slice(0, visibleItems);
+            
+            if (items.length === 0) {
+                grid.innerHTML = '<div class="empty-gallery">📭 No dishes uploaded yet.</div>';
+                return;
+            }
+            
+            grid.innerHTML = items.map(item => `
+                <div class="gallery-item">
+                    <div class="gallery-image">
+                        ${item.image_path ? `<img src="${item.image_path}" alt="${item.dish}">` : item.image}
+                    </div>
+                    <div class="gallery-info">
+                        <h3>${escapeHtml(item.dish)}</h3>
+                        <p>${escapeHtml(item.caption)}</p>
+                        <small>by @${item.username} • ${item.time}</small>
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 0.5rem;">
+                            <button class="like-btn ${likedItems.includes(item.id) ? 'liked' : ''}" onclick="toggleLike(${item.id}, this)">
+                                ❤️ <span class="like-count">${item.likes}</span>
+                            </button>
+                            <button class="btn btn-outline btn-sm" onclick="shareDish('${escapeHtml(item.dish)}')">📤 Share</button>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+            
+            const loadMoreBtn = document.getElementById('loadMoreBtn');
+            if (visibleItems >= itemsToShow.length) {
+                loadMoreBtn.style.display = 'none';
+            } else {
+                loadMoreBtn.style.display = 'block';
+            }
+        }
+        
+        function escapeHtml(text) {
+            if (!text) return '';
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+        
+        document.getElementById('loadMoreBtn').addEventListener('click', () => {
+            visibleItems += 6;
+            sortAndRenderGallery();
+        });
+        
+        document.getElementById('sortGallery').addEventListener('change', (e) => {
+            currentSort = e.target.value;
+            visibleItems = 6;
+            sortAndRenderGallery();
+        });
+        
+        loadGallery();
+    
+        // Cross-tab logout: if another tab logs out, update this page too
+        window.addEventListener('storage', function(e) {
+            if (e.key === 'isLoggedIn' && e.newValue !== 'true') {
+                updateNavbar();
+            }
+            if (e.key === 'logoutEvent') {
+                localStorage.removeItem('isLoggedIn');
+                localStorage.removeItem('username');
+                localStorage.removeItem('userEmail');
+                updateNavbar();
+            }
+        });
+</script>
+</body>
+</html>

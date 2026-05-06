@@ -1,0 +1,533 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Select Ingredients - Sizzle & Share</title>
+    <!-- Use the same main.css as index.html for consistent fonts and variables -->
+    <link rel="stylesheet" href="css/main.css">
+    <style>
+        /* Additional styles for ingredients page using CSS variables from main.css */
+        .ingredients-hero {
+            background: linear-gradient(135deg, var(--color-primary), var(--color-purple));
+            color: white;
+            padding: 4rem 2rem;
+            text-align: center;
+        }
+        
+        .ingredients-hero h1 {
+            font-family: 'Century Gothic', 'Trebuchet MS', 'Futura', 'Arial', sans-serif;
+            font-weight: 700;
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+        
+        .ingredients-hero p {
+            font-size: 1.2rem;
+            opacity: 0.95;
+        }
+        
+        .search-bar {
+            max-width: 500px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+        
+        .search-bar input {
+            width: 100%;
+            padding: 1rem;
+            border: 2px solid var(--color-border);
+            border-radius: var(--radius-full);
+            font-size: 1rem;
+            font-family: inherit;
+            transition: all 0.3s ease;
+        }
+        
+        .search-bar input:focus {
+            outline: none;
+            border-color: var(--color-primary);
+            box-shadow: 0 0 0 3px rgba(255, 107, 53, 0.1);
+        }
+        
+        .category-filter {
+            display: flex;
+            gap: 0.75rem;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin: 1.5rem 0;
+        }
+        
+        .category-btn {
+            padding: 0.6rem 1.3rem;
+            border-radius: var(--radius-full);
+            background: var(--color-background);
+            border: 1px solid var(--color-border);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: 'Century Gothic', 'Trebuchet MS', 'Futura', 'Arial', sans-serif;
+            font-weight: 500;
+            font-size: 0.9rem;
+        }
+        
+        .category-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-sm);
+            background: var(--color-primary-light);
+            color: white;
+        }
+        
+        .category-btn.active {
+            background: var(--color-primary);
+            color: white;
+            border-color: var(--color-primary);
+        }
+        
+        .ingredients-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 1.5rem;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        
+        .ingredient-card {
+            background: white;
+            border-radius: var(--radius-lg);
+            padding: 1.2rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+            position: relative;
+            overflow: hidden;
+            box-shadow: var(--shadow-sm);
+        }
+        
+        .ingredient-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-lg);
+        }
+        
+        .ingredient-card.selected {
+            border-color: var(--color-success);
+            background: linear-gradient(135deg, #f0fff4, white);
+        }
+        
+        .ingredient-card.selected::after {
+            content: '✓';
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: var(--color-success);
+            color: white;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            font-weight: bold;
+        }
+        
+        .ingredient-img {
+            width: 64px;
+            height: 64px;
+            object-fit: contain;
+            border-radius: 8px;
+            margin-bottom: 0.5rem;
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        .ingredient-name {
+            font-weight: 600;
+            color: var(--color-text);
+            font-size: 1rem;
+            font-family: 'Century Gothic', 'Trebuchet MS', 'Futura', 'Arial', sans-serif;
+        }
+        
+        .ingredient-category {
+            font-size: 0.7rem;
+            color: var(--color-text-lighter);
+            margin-top: 0.25rem;
+        }
+        
+        .selected-count {
+            text-align: center;
+            margin: 1rem 0;
+            font-size: 1.1rem;
+            font-weight: 500;
+            font-family: 'Century Gothic', 'Trebuchet MS', 'Futura', 'Arial', sans-serif;
+        }
+        
+        .action-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            margin: 2rem 0 3rem;
+            flex-wrap: wrap;
+        }
+        
+        
+        body {
+            font-family: 'Century Gothic', 'Trebuchet MS', 'Futura', 'Arial', sans-serif;
+            background: linear-gradient(135deg, #FFF9F0 0%, #FFE8D6 100%);
+            color: #2B2D42;
+            min-height: 100vh;
+        }
+        
+        /* Dark mode support */
+        body.dark-mode {
+            background: #1a1a2e;
+            color: #eee;
+        }
+        
+        body.dark-mode .ingredient-card {
+            background: #16213e;
+            color: #eee;
+        }
+        
+        body.dark-mode .ingredient-card.selected {
+            background: linear-gradient(135deg, #1a3a2a, #16213e);
+        }
+        
+        body.dark-mode .category-btn {
+            background: #16213e;
+            color: #eee;
+            border-color: #333;
+        }
+        
+        body.dark-mode .search-bar input {
+            background: #0f0f1a;
+            color: #eee;
+            border-color: #333;
+        }
+    </style>
+</head>
+<body>
+<nav class="navbar">
+        <div class="navbar-container">
+            <a href="index.html" class="navbar-logo">
+                <span class="logo-icon">🍳</span>
+                <span class="logo-text">Sizzle &amp; Share</span>
+            </a>
+            <button class="menu-btn" id="menuBtn" aria-label="Toggle menu" aria-expanded="false">
+                <span></span><span></span><span></span>
+            </button>
+            <ul class="nav-menu" id="navMenu">
+                <!-- Public links always visible -->
+                <li class="nav-item"><a href="index.html" class="nav-link">Home</a></li>
+                <li class="nav-item"><a href="gallery.html" class="nav-link">Gallery</a></li>
+                <li class="nav-item"><a href="leaderboard.html" class="nav-link">Leaderboard</a></li>
+                <li class="nav-item"><a href="about.html" class="nav-link">About</a></li>
+                <!-- Guest only: shown when NOT logged in -->
+                <li class="nav-item guest-only"><a href="login.html" class="btn btn-primary btn-sm">Login</a></li>
+                <li class="nav-item guest-only"><a href="signup.html" class="btn btn-outline btn-sm">Sign Up</a></li>
+                <!-- User dropdown: shown ONLY when logged in -->
+                <li class="nav-item user-only user-dropdown" id="userDropdown">
+                    <button class="user-dropdown-toggle" aria-haspopup="true" aria-expanded="false">
+                        <span class="user-avatar-badge">U</span>
+                        <span id="dropdownUsername">Account</span>
+                        <span class="dropdown-arrow">▼</span>
+                    </button>
+                    <div class="user-dropdown-menu" role="menu">
+                        <div class="dropdown-header">
+                            <div class="dropdown-header-name">Username</div>
+                            <div class="dropdown-header-email"></div>
+                        </div>
+                        <a href="user/dashboard.html" class="dropdown-item" role="menuitem"><span class="item-icon">📊</span> Dashboard</a>
+                        <a href="user/profile.html" class="dropdown-item" role="menuitem"><span class="item-icon">👤</span> My Profile</a>
+                        <a href="upload.html" class="dropdown-item" role="menuitem"><span class="item-icon">📸</span> Upload Photo</a>
+                        <a href="ingredients.html" class="dropdown-item" role="menuitem"><span class="item-icon">🥦</span> Ingredients</a>
+                        <a href="recipes.html" class="dropdown-item" role="menuitem"><span class="item-icon">📖</span> Recipes</a>
+                        <a href="challenge.html" class="dropdown-item" role="menuitem"><span class="item-icon">🏆</span> Challenge</a>
+                        <div class="dropdown-divider"></div>
+                        <button class="dropdown-item logout-item" onclick="logout()" role="menuitem"><span class="item-icon">🚪</span> Logout</button>
+                    </div>
+                </li>
+                <li class="nav-item"><button class="theme-toggle" id="darkModeToggle" onclick="toggleDarkMode()">🌙</button></li>
+            </ul>
+        </div>
+    </nav>
+
+    <script src="js/common.js"></script>
+
+
+    <!-- Main Content -->
+    <div id="pageContent">
+        <div class="ingredients-hero">
+            <h1>🥕 What's in Your Kitchen?</h1>
+            <p>Select the ingredients you have, and we'll find perfect recipes for you!</p>
+        </div>
+
+        <div class="search-bar">
+            <input type="text" id="searchInput" placeholder="🔍 Search ingredients...">
+        </div>
+
+        <div class="category-filter" id="categoryFilter">
+            <button class="category-btn active" data-category="all">All</button>
+            <button class="category-btn" data-category="Vegetables">🥬 Vegetables</button>
+            <button class="category-btn" data-category="Meat">🍗 Meat</button>
+            <button class="category-btn" data-category="Dairy">🥛 Dairy</button>
+            <button class="category-btn" data-category="Grains">🌾 Grains</button>
+            <button class="category-btn" data-category="Herbs & Spices">🌿 Herbs & Spices</button>
+            <button class="category-btn" data-category="Seasonings">🧂 Seasonings</button>
+            <button class="category-btn" data-category="Sweeteners">🍯 Sweeteners</button>
+            <button class="category-btn" data-category="Oils">🫒 Oils</button>
+        </div>
+
+        <div class="selected-count" id="selectedCount">Selected: 0 ingredients</div>
+
+        <div class="ingredients-grid" id="ingredientsGrid"></div>
+
+        <div class="action-buttons">
+            <button class="btn btn-outline" id="clearAllBtn">Clear All</button>
+            <button class="btn btn-primary" id="findRecipesBtn">Find Recipes 🍳</button>
+        </div>
+    </div>
+
+    <!-- Footer matching index.html -->
+    <footer class="footer">
+        <div class="footer-container">
+            <div class="footer-section">
+                <h3>🍳 Sizzle & Share</h3>
+                <p>Cook, Capture, Challenge - Share Your Culinary Magic!</p>
+                <div class="social-links">
+                    <a href="#" class="social-link">📷</a>
+                    <a href="#" class="social-link">📘</a>
+                    <a href="#" class="social-link">🐦</a>
+                    <a href="#" class="social-link">📌</a>
+                </div>
+            </div>
+            
+            <div class="footer-section">
+                <h4>Quick Links</h4>
+                <ul class="footer-links">
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="gallery.html">Gallery</a></li>
+                    <li><a href="leaderboard.html">Leaderboard</a></li>
+                    <li><a href="about.html">About</a></li>
+                </ul>
+            </div>
+            
+            <div class="footer-section">
+                <h4>Get Fresh Recipes</h4>
+                <form class="newsletter-form" id="newsletterForm" onsubmit="handleNewsletter(event)">
+                    <input type="email" placeholder="Enter your email" class="newsletter-input" required>
+                    <button type="submit" class="newsletter-btn">Subscribe</button>
+                </form>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2025 Sizzle & Share. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <button class="scroll-top" id="scrollTop">↑</button>
+
+    <script>
+        // ========== INGREDIENTS DATA (loaded from PHP, falls back to hardcoded) ==========
+        const FALLBACK_INGREDIENTS = [
+            { id: 1, name: 'Tomato', img: 'https://www.themealdb.com/images/ingredients/Tomato-Small.png', category: 'Vegetables' },
+            { id: 2, name: 'Onion', img: 'https://www.themealdb.com/images/ingredients/Onion-Small.png', category: 'Vegetables' },
+            { id: 3, name: 'Garlic', img: 'https://www.themealdb.com/images/ingredients/Garlic-Small.png', category: 'Herbs & Spices' },
+            { id: 4, name: 'Chicken', img: 'https://www.themealdb.com/images/ingredients/Chicken-Small.png', category: 'Meat' },
+            { id: 5, name: 'Eggs', img: 'https://www.themealdb.com/images/ingredients/Egg-Small.png', category: 'Dairy' },
+            { id: 6, name: 'Milk', img: 'https://www.themealdb.com/images/ingredients/Milk-Small.png', category: 'Dairy' },
+            { id: 7, name: 'Flour', img: 'https://www.themealdb.com/images/ingredients/Flour-Small.png', category: 'Grains' },
+            { id: 8, name: 'Rice', img: 'https://www.themealdb.com/images/ingredients/Rice-Small.png', category: 'Grains' },
+            { id: 9, name: 'Pasta', img: 'https://www.themealdb.com/images/ingredients/Pasta-Small.png', category: 'Grains' },
+            { id: 10, name: 'Cheese', img: 'https://www.themealdb.com/images/ingredients/Cheddar%20Cheese-Small.png', category: 'Dairy' },
+            { id: 11, name: 'Potato', img: 'https://www.themealdb.com/images/ingredients/Potato-Small.png', category: 'Vegetables' },
+            { id: 12, name: 'Carrot', img: 'https://www.themealdb.com/images/ingredients/Carrots-Small.png', category: 'Vegetables' },
+            { id: 13, name: 'Bell Pepper', img: 'https://www.themealdb.com/images/ingredients/Red%20Pepper-Small.png', category: 'Vegetables' },
+            { id: 14, name: 'Olive Oil', img: 'https://www.themealdb.com/images/ingredients/Olive%20Oil-Small.png', category: 'Oils' },
+            { id: 15, name: 'Salt', img: 'https://www.themealdb.com/images/ingredients/Salt-Small.png', category: 'Seasonings' },
+            { id: 16, name: 'Black Pepper', img: 'https://www.themealdb.com/images/ingredients/Black%20Pepper-Small.png', category: 'Seasonings' },
+            { id: 17, name: 'Basil', img: 'https://www.themealdb.com/images/ingredients/Basil-Small.png', category: 'Herbs & Spices' },
+            { id: 18, name: 'Butter', img: 'https://www.themealdb.com/images/ingredients/Butter-Small.png', category: 'Dairy' },
+            { id: 19, name: 'Sugar', img: 'https://www.themealdb.com/images/ingredients/Sugar-Small.png', category: 'Sweeteners' },
+            { id: 20, name: 'Beef', img: 'https://www.themealdb.com/images/ingredients/Beef-Small.png', category: 'Meat' },
+            { id: 21, name: 'Fish', img: 'https://www.themealdb.com/images/ingredients/Fish%20Fillet-Small.png', category: 'Meat' },
+            { id: 22, name: 'Lemon', img: 'https://www.themealdb.com/images/ingredients/Lemon-Small.png', category: 'Vegetables' },
+            { id: 23, name: 'Yogurt', img: 'https://www.themealdb.com/images/ingredients/Yogurt-Small.png', category: 'Dairy' },
+            { id: 24, name: 'Honey', img: 'https://www.themealdb.com/images/ingredients/Honey-Small.png', category: 'Sweeteners' },
+            { id: 25, name: 'Cucumber', img: 'https://www.themealdb.com/images/ingredients/Cucumber-Small.png', category: 'Vegetables' },
+            { id: 26, name: 'Mushroom', img: 'https://www.themealdb.com/images/ingredients/Mushrooms-Small.png', category: 'Vegetables' },
+            { id: 27, name: 'Cinnamon', img: 'https://www.themealdb.com/images/ingredients/Cinnamon-Small.png', category: 'Herbs & Spices' },
+            { id: 28, name: 'Paprika', img: 'https://www.themealdb.com/images/ingredients/Paprika-Small.png', category: 'Seasonings' },
+            { id: 29, name: 'Broccoli', img: 'https://www.themealdb.com/images/ingredients/Broccoli-Small.png', category: 'Vegetables' },
+            { id: 30, name: 'Spinach', img: 'https://www.themealdb.com/images/ingredients/Spinach-Small.png', category: 'Vegetables' }
+        ];
+
+        let ingredients = [...FALLBACK_INGREDIENTS];
+        let selectedIngredients = new Set();
+        let currentCategory = 'all';
+        let searchTerm = '';
+
+        // Try loading ingredients from the database via PHP backend
+        async function loadIngredientsFromServer() {
+            try {
+                const res = await fetch('php/get-ingredients-public.php',
+                    { signal: AbortSignal.timeout ? AbortSignal.timeout(4000) : undefined });
+                if (!res.ok) throw new Error('bad response');
+                const json = await res.json();
+                if (json.success && Array.isArray(json.data) && json.data.length > 0) {
+                    const ingNameMap = {"Tomato":"Tomato","Onion":"Onion","Garlic":"Garlic","Chicken":"Chicken","Eggs":"Egg","Milk":"Milk","Flour":"Flour","Rice":"Rice","Pasta":"Pasta","Cheese":"Cheddar Cheese","Potato":"Potato","Carrot":"Carrots","Bell Pepper":"Red Pepper","Olive Oil":"Olive Oil","Salt":"Salt","Black Pepper":"Black Pepper","Basil":"Basil","Butter":"Butter","Sugar":"Sugar","Beef":"Beef","Fish":"Fish Fillet","Lemon":"Lemon","Yogurt":"Yogurt","Honey":"Honey","Cucumber":"Cucumber","Mushroom":"Mushrooms","Cinnamon":"Cinnamon","Paprika":"Paprika","Broccoli":"Broccoli","Spinach":"Spinach"};
+                    ingredients = json.data.map(i => {
+                        const mapped = ingNameMap[i.name] || i.name;
+                        const mealdbUrl = 'https://www.themealdb.com/images/ingredients/' + encodeURIComponent(mapped) + '-Small.png';
+                        return {
+                            id: parseInt(i.id),
+                            name: i.name,
+                            img: i.image_path ? 'uploads/ingredient-images/' + i.image_path : mealdbUrl,
+                            category: i.category || 'Other'
+                        };
+                    });
+                }
+            } catch (_) { /* silently fall back to FALLBACK_INGREDIENTS */ }
+        }
+
+        function renderIngredients() {
+            let filtered = ingredients.filter(ing => {
+                if (currentCategory !== 'all' && ing.category !== currentCategory) return false;
+                if (searchTerm && !ing.name.toLowerCase().includes(searchTerm.toLowerCase())) return false;
+                return true;
+            });
+            const grid = document.getElementById('ingredientsGrid');
+            if (!grid) return;
+            if (filtered.length === 0) {
+                grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:3rem;">😕 No ingredients found. Try another filter!</div>';
+                return;
+            }
+            grid.innerHTML = filtered.map(ing => `
+                <div class="ingredient-card ${selectedIngredients.has(ing.id) ? 'selected' : ''}" data-id="${ing.id}">
+                    <img class="ingredient-img" src="${ing.img}" alt="${ing.name}" onerror="this.style.display=\"none\"">
+                    <div class="ingredient-name">${ing.name}</div>
+                    <div class="ingredient-category">${ing.category}</div>
+                </div>
+            `).join('');
+            document.querySelectorAll('.ingredient-card').forEach(card => {
+                card.addEventListener('click', () => {
+                    const id = parseInt(card.dataset.id);
+                    const obj = ingredients.find(i => i.id === id);
+                    if (selectedIngredients.has(id)) {
+                        selectedIngredients.delete(id);
+                        showNotification(obj?.name + ' removed', 'info');
+                    } else {
+                        selectedIngredients.add(id);
+                        showNotification(obj?.name + ' added!', 'success');
+                    }
+                    renderIngredients();
+                    updateSelectedCount();
+                    saveToLocal();
+                });
+            });
+        }
+
+        function updateSelectedCount() {
+            const count = selectedIngredients.size;
+            const el = document.getElementById('selectedCount');
+            if (el) {
+                el.innerHTML = 'Selected: <strong>' + count + '</strong> ingredient' + (count !== 1 ? 's' : '');
+                el.style.color = count === 0 ? 'var(--color-text-light)' : count <= 3 ? 'var(--color-primary)' : 'var(--color-success)';
+            }
+        }
+
+        function saveToLocal() {
+            localStorage.setItem('selectedIngredients', JSON.stringify([...selectedIngredients]));
+        }
+
+        function loadSelections() {
+            try {
+                const saved = localStorage.getItem('selectedIngredients');
+                if (saved) selectedIngredients = new Set(JSON.parse(saved));
+            } catch (_) {}
+            updateSelectedCount();
+        }
+
+        function clearAllSelections() {
+            selectedIngredients.clear();
+            saveToLocal();
+            renderIngredients();
+            updateSelectedCount();
+            showNotification('All ingredients cleared!', 'info');
+        }
+
+        function findRecipes() {
+            if (selectedIngredients.size === 0) {
+                showNotification('Please select at least one ingredient!', 'error');
+                return;
+            }
+            saveToLocal();
+            showNotification('Finding recipes with ' + selectedIngredients.size + ' ingredients…', 'success');
+            setTimeout(() => { window.location.href = 'recipes.html'; }, 500);
+        }
+
+        function showNotification(message, type) {
+            const n = document.createElement('div');
+            n.textContent = message;
+            const bg = type === 'success' ? '#06D6A0' : type === 'error' ? '#EF476F' : '#4ECDC4';
+            n.style.cssText = 'position:fixed;bottom:20px;right:20px;padding:12px 20px;border-radius:8px;background:' + bg + ';color:white;z-index:10000;font-weight:500;font-family:inherit;box-shadow:0 4px 12px rgba(0,0,0,.15);animation:slideIn .3s ease;';
+            document.body.appendChild(n);
+            setTimeout(() => n.remove(), 3000);
+        }
+
+        function handleIngImgUpload(input) {
+            const ingId = parseInt(input.dataset.ingid);
+            const file = input.files[0];
+            if (!file) return;
+            if (file.size > 5 * 1024 * 1024) { showNotification('Image too large (max 5 MB)', 'error'); return; }
+            const reader = new FileReader();
+            reader.onload = e => {
+                const dataUrl = e.target.result;
+                localStorage.setItem('ing_custom_img_' + ingId, dataUrl);
+                const imgEl = document.getElementById('ing-img-' + ingId);
+                if (imgEl) { imgEl.src = dataUrl; imgEl.style.display = 'block'; }
+                showNotification('Custom photo saved!', 'success');
+            };
+            reader.readAsDataURL(file);
+        }
+
+
+        const _sty = document.createElement('style');
+        _sty.textContent = '@keyframes slideIn{from{transform:translateX(100%);opacity:0}to{transform:translateX(0);opacity:1}}';
+        document.head.appendChild(_sty);
+
+        document.getElementById('searchInput')?.addEventListener('input', e => {
+            searchTerm = e.target.value; renderIngredients();
+        });
+        document.querySelectorAll('.category-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.category-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                currentCategory = btn.dataset.category;
+                renderIngredients();
+            });
+        });
+        document.getElementById('clearAllBtn')?.addEventListener('click', clearAllSelections);
+        document.getElementById('findRecipesBtn')?.addEventListener('click', findRecipes);
+
+        const _stb = document.getElementById('scrollTop');
+        if (_stb) {
+            window.addEventListener('scroll', () => { _stb.style.display = window.scrollY > 300 ? 'flex' : 'none'; });
+            _stb.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
+        }
+
+        window.handleNewsletter = e => {
+            e.preventDefault();
+            const email = e.target.querySelector('input').value;
+            if (email) { showNotification('Thanks for subscribing!', 'success'); e.target.reset(); }
+        };
+
+        async function init() {
+            loadSelections();
+            await loadIngredientsFromServer();
+            renderIngredients();
+        }
+        init();
+    </script>
+</body>

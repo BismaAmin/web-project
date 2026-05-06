@@ -50,15 +50,81 @@
         }
 
         .recipe-image img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-}
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .recipe-image {
+            overflow: hidden;
+        }
 
-.recipe-image {
-    overflow: hidden;
-}
+        /* ── Section centering & spacing ── */
+        .hero-section {
+            text-align: center;
+        }
+        .hero-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            justify-content: center;
+            margin-top: 1.5rem;
+        }
 
+        /* ── Recipe cards uniform height ── */
+        .recipe-card {
+            display: flex;
+            flex-direction: column;
+        }
+        .recipe-card > div:last-child {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        /* ── Challenge cards ── */
+        .challenge-card {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+        .challenge-card .btn {
+            align-self: flex-start;
+        }
+
+        /* ── Chef cards center content ── */
+        .chef-card {
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.4rem;
+        }
+
+        /* ── Step cards center ── */
+        .step-card {
+            text-align: center;
+        }
+
+        /* ── Featured dish grid ── */
+        .featured-dish {
+            border-radius: 12px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* ── Section headings consistent ── */
+        .section h2.text-center {
+            font-size: 1.8rem;
+        }
+
+        /* ── Responsive grid fallback ── */
+        @media (max-width: 640px) {
+            .hero-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+        }
     </style>
 </head>
 <body>
@@ -68,43 +134,43 @@
         <div class="navbar-container">
             <a href="index.html" class="navbar-logo">
                 <span class="logo-icon">🍳</span>
-                <span class="logo-text">Sizzle & Share</span>
+                <span class="logo-text">Sizzle &amp; Share</span>
             </a>
-            
             <button class="menu-btn" id="menuBtn" aria-label="Toggle menu" aria-expanded="false">
-                <span></span>
-                <span></span>
-                <span></span>
+                <span></span><span></span><span></span>
             </button>
-            
             <ul class="nav-menu" id="navMenu">
-                <!-- Public Links (Always Visible) -->
-                <li class="nav-item"><a href="index.html" class="nav-link" id="homeLink">Home</a></li>
-                <li class="nav-item"><a href="gallery.html" class="nav-link" id="galleryLink">Gallery</a></li>
-                <li class="nav-item"><a href="leaderboard.html" class="nav-link" id="leaderboardLink">Leaderboard</a></li>
-                <li class="nav-item"><a href="about.html" class="nav-link" id="aboutLink">About</a></li>
-                
-                <!-- Protected Links (Visible only when logged in) -->
-                <li class="nav-item user-only"><a href="ingredients.html" class="nav-link">Ingredients</a></li>
-                <li class="nav-item user-only"><a href="recipes.html" class="nav-link">Recipes</a></li>
-                <li class="nav-item user-only"><a href="challenge.html" class="nav-link">Challenge</a></li>
-                <li class="nav-item user-only"><a href="user/dashboard.html" class="nav-link">Dashboard</a></li>
-                <li class="nav-item user-only"><a href="user/profile.html" class="nav-link">Profile</a></li>
-                <li class="nav-item user-only"><a href="upload.html" class="nav-link">Upload</a></li>
-                
-                <!-- Auth Links - Guest Only -->
+                <!-- Public links always visible -->
+                <li class="nav-item"><a href="index.html" class="nav-link active">Home</a></li>
+                <li class="nav-item"><a href="gallery.html" class="nav-link">Gallery</a></li>
+                <li class="nav-item"><a href="leaderboard.html" class="nav-link">Leaderboard</a></li>
+                <li class="nav-item"><a href="about.html" class="nav-link">About</a></li>
+                <!-- Guest only: shown when NOT logged in -->
                 <li class="nav-item guest-only"><a href="login.html" class="btn btn-primary btn-sm">Login</a></li>
                 <li class="nav-item guest-only"><a href="signup.html" class="btn btn-outline btn-sm">Sign Up</a></li>
-                
-                <!-- Logout Button - User Only -->
-                <li class="nav-item user-only">
-                    <button class="btn btn-danger btn-sm" onclick="showLogoutConfirm()">Logout</button>
+                <!-- User dropdown: shown ONLY when logged in -->
+                <li class="nav-item user-only user-dropdown" id="userDropdown">
+                    <button class="user-dropdown-toggle" aria-haspopup="true" aria-expanded="false">
+                        <span class="user-avatar-badge">U</span>
+                        <span id="dropdownUsername">Account</span>
+                        <span class="dropdown-arrow">▼</span>
+                    </button>
+                    <div class="user-dropdown-menu" role="menu">
+                        <div class="dropdown-header">
+                            <div class="dropdown-header-name">Username</div>
+                            <div class="dropdown-header-email"></div>
+                        </div>
+                        <a href="user/dashboard.html" class="dropdown-item" role="menuitem"><span class="item-icon">📊</span> Dashboard</a>
+                        <a href="user/profile.html" class="dropdown-item" role="menuitem"><span class="item-icon">👤</span> My Profile</a>
+                        <a href="upload.html" class="dropdown-item" role="menuitem"><span class="item-icon">📸</span> Upload Photo</a>
+                        <a href="ingredients.html" class="dropdown-item" role="menuitem"><span class="item-icon">🥦</span> Ingredients</a>
+                        <a href="recipes.html" class="dropdown-item" role="menuitem"><span class="item-icon">📖</span> Recipes</a>
+                        <a href="challenge.html" class="dropdown-item" role="menuitem"><span class="item-icon">🏆</span> Challenge</a>
+                        <div class="dropdown-divider"></div>
+                        <button class="dropdown-item logout-item" onclick="logout()" role="menuitem"><span class="item-icon">🚪</span> Logout</button>
+                    </div>
                 </li>
-                
-                <!-- Dark Mode Toggle -->
-                <li class="nav-item">
-                    <button class="theme-toggle" id="darkModeToggle" onclick="toggleDarkMode()">🌙</button>
-                </li>
+                <li class="nav-item"><button class="theme-toggle" id="darkModeToggle" onclick="toggleDarkMode()">🌙</button></li>
             </ul>
         </div>
     </nav>
@@ -122,8 +188,9 @@
         </div>
     </div>
 
+    <script src="js/common.js"></script>
     <script>
-        // ========== LOGOUT FUNCTIONS ==========
+        // ========== LOGOUT CONFIRMATION MODAL (specific to index.html) ==========
         
         function showLogoutConfirm() {
             const modal = document.getElementById('logoutModal');
@@ -156,112 +223,69 @@
             // Clear sessionStorage
             sessionStorage.clear();
             
-            // IMPORTANT: Set a flag in localStorage to notify other tabs
+            // Notify other tabs
             localStorage.setItem('logoutEvent', Date.now().toString());
             
-            // Update navbar for current page
-            updateNavbarForGuest();
+            // Show notification using common.js function
+            if (typeof showNotification === 'function') {
+                showNotification('Logged out successfully!', 'success');
+            } else {
+                showNotificationMessage('Logged out successfully!', 'success');
+            }
             
-            // Show notification
-            showNotificationMessage('Logged out successfully!', 'success');
+            // Update navbar immediately using common.js
+            if (typeof updateNavbar === 'function') {
+                updateNavbar();
+            }
             
-            // Optional: Redirect to home after 1 second
+            // Redirect to home after 1 second
             setTimeout(function() {
                 window.location.href = 'index.html';
             }, 1000);
         }
         
-        // ========== NAVBAR UPDATE FUNCTIONS ==========
+        // ========== CROSS-TAB SYNC ==========
         
-        function updateNavbarForGuest() {
-            // Hide user-only elements
-            const userOnlyElements = document.querySelectorAll('.user-only');
-            userOnlyElements.forEach(el => {
-                el.style.display = 'none';
-            });
-            
-            // Show guest-only elements
-            const guestOnlyElements = document.querySelectorAll('.guest-only');
-            guestOnlyElements.forEach(el => {
-                el.style.display = 'block';
-            });
-            
-            // Remove logged-in class from body
-            document.body.classList.remove('logged-in');
-        }
-        
-        function updateNavbarForUser() {
-            // Show user-only elements
-            const userOnlyElements = document.querySelectorAll('.user-only');
-            userOnlyElements.forEach(el => {
-                el.style.display = 'block';
-            });
-            
-            // Hide guest-only elements
-            const guestOnlyElements = document.querySelectorAll('.guest-only');
-            guestOnlyElements.forEach(el => {
-                el.style.display = 'none';
-            });
-            
-            // Add logged-in class to body
-            document.body.classList.add('logged-in');
-        }
-        
-        function checkLoginStatusAndUpdateNavbar() {
-            const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
-            
-            if (isLoggedIn) {
-                updateNavbarForUser();
-            } else {
-                updateNavbarForGuest();
-            }
-        }
-        
-        // ========== CROSS-TAB SYNC - LISTEN FOR LOGOUT FROM OTHER TABS ==========
-        
-        function listenForLogoutFromOtherTabs() {
-            window.addEventListener('storage', function(e) {
-                // Check if the logoutEvent was set in another tab
-                if (e.key === 'logoutEvent') {
-                    console.log('Logout detected from another tab!');
-                    
-                    // Clear any remaining localStorage items
-                    localStorage.removeItem('isLoggedIn');
-                    localStorage.removeItem('username');
-                    localStorage.removeItem('userEmail');
-                    localStorage.removeItem('selectedIngredients');
-                    localStorage.removeItem('challengeJoined');
-                    localStorage.removeItem('galleryLikedItems');
-                    localStorage.removeItem('userStats');
-                    localStorage.removeItem('userProfile');
-                    
-                    // Update navbar to guest view
-                    updateNavbarForGuest();
-                    
-                    // Show notification
-                    showNotificationMessage('You have been logged out from another tab', 'info');
-                    
-                    // Optional: Reload page after 2 seconds
-                    setTimeout(function() {
-                        window.location.reload();
-                    }, 2000);
+        window.addEventListener('storage', function(e) {
+            if (e.key === 'logoutEvent') {
+                localStorage.removeItem('isLoggedIn');
+                localStorage.removeItem('username');
+                localStorage.removeItem('userEmail');
+                localStorage.removeItem('selectedIngredients');
+                localStorage.removeItem('challengeJoined');
+                localStorage.removeItem('galleryLikedItems');
+                localStorage.removeItem('userStats');
+                localStorage.removeItem('userProfile');
+                
+                if (typeof updateNavbar === 'function') {
+                    updateNavbar();
                 }
                 
-                // Also listen for direct isLoggedIn changes
-                if (e.key === 'isLoggedIn' && e.newValue === 'false') {
-                    updateNavbarForGuest();
-                    showNotificationMessage('Session expired. Please login again.', 'warning');
-                    setTimeout(function() {
-                        window.location.reload();
-                    }, 1500);
+                if (typeof showNotification === 'function') {
+                    showNotification('You have been logged out from another tab', 'info');
                 }
-            });
-        }
+                
+                setTimeout(function() {
+                    window.location.reload();
+                }, 2000);
+            }
+            
+            if (e.key === 'isLoggedIn' && e.newValue === 'false') {
+                if (typeof updateNavbar === 'function') {
+                    updateNavbar();
+                }
+                if (typeof showNotification === 'function') {
+                    showNotification('Session expired. Please login again.', 'warning');
+                }
+                setTimeout(function() {
+                    window.location.reload();
+                }, 1500);
+            }
+        });
         
-        // ========== NOTIFICATION FUNCTION ==========
+        // ========== FALLBACK NOTIFICATION (if common.js not loaded) ==========
         
         function showNotificationMessage(message, type) {
-            // Remove any existing notification
             const existing = document.querySelector('.dynamic-notification');
             if (existing) existing.remove();
             
@@ -291,7 +315,7 @@
             }, 3000);
         }
         
-        // ========== PROTECT PROTECTED PAGES ==========
+        // ========== PROTECT PROTECTED LINKS ==========
         
         function protectProtectedLinks() {
             const protectedPages = ['ingredients.html', 'recipes.html', 'challenge.html', 'user/dashboard.html', 'user/profile.html', 'upload.html'];
@@ -300,10 +324,11 @@
                 const links = document.querySelectorAll(`a[href="${page}"]`);
                 links.forEach(link => {
                     link.addEventListener('click', function(e) {
-                        const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
-                        if (!isLoggedIn) {
+                        if (typeof isLoggedIn === 'function' && !isLoggedIn()) {
                             e.preventDefault();
-                            showNotificationMessage('Please login to access this page', 'error');
+                            if (typeof showNotification === 'function') {
+                                showNotification('Please login to access this page', 'error');
+                            }
                             setTimeout(() => {
                                 window.location.href = 'login.html';
                             }, 1000);
@@ -313,164 +338,11 @@
             });
         }
         
-        // ========== DARK MODE ==========
-        
-        function initDarkMode() {
-            const isDark = localStorage.getItem('darkMode') === 'true';
-            if (isDark) {
-                document.body.classList.add('dark-mode');
-                const toggleBtn = document.getElementById('darkModeToggle');
-                if (toggleBtn) toggleBtn.textContent = '☀️';
-            }
-        }
-        
-        function toggleDarkMode() {
-            document.body.classList.toggle('dark-mode');
-            const isDark = document.body.classList.contains('dark-mode');
-            localStorage.setItem('darkMode', isDark);
-            const toggleBtn = document.getElementById('darkModeToggle');
-            if (toggleBtn) {
-                toggleBtn.textContent = isDark ? '☀️' : '🌙';
-            }
-            showNotificationMessage(isDark ? 'Dark mode activated 🌙' : 'Light mode activated ☀️', 'info');
-        }
-        
-        // ========== MOBILE MENU ==========
-        
-        function initMobileMenu() {
-            const menuBtn = document.getElementById('menuBtn');
-            const navMenu = document.getElementById('navMenu');
-            
-            if (menuBtn && navMenu) {
-                menuBtn.addEventListener('click', () => {
-                    navMenu.classList.toggle('active');
-                    const isActive = navMenu.classList.contains('active');
-                    menuBtn.setAttribute('aria-expanded', isActive);
-                });
-                
-                // Close menu on outside click
-                document.addEventListener('click', (e) => {
-                    if (!menuBtn.contains(e.target) && !navMenu.contains(e.target)) {
-                        navMenu.classList.remove('active');
-                        menuBtn.setAttribute('aria-expanded', 'false');
-                    }
-                });
-            }
-        }
-        
-        // ========== SCROLL TO TOP ==========
-        
-        function initScrollToTop() {
-            const scrollBtn = document.getElementById('scrollTop');
-            if (!scrollBtn) return;
-            
-            window.addEventListener('scroll', () => {
-                if (window.scrollY > 300) {
-                    scrollBtn.style.display = 'flex';
-                } else {
-                    scrollBtn.style.display = 'none';
-                }
-            });
-            
-            scrollBtn.addEventListener('click', () => {
-                window.scrollTo({ top: 0, behavior: 'smooth' });
-            });
-        }
-        
-        // ========== NEWSLETTER ==========
-        
-        function initNewsletter() {
-            const newsletterForm = document.getElementById('newsletterForm');
-            if (newsletterForm) {
-                newsletterForm.addEventListener('submit', (e) => {
-                    e.preventDefault();
-                    const input = newsletterForm.querySelector('input');
-                    if (input && input.value) {
-                        showNotificationMessage(`Subscribed with ${input.value}! Check your inbox.`, 'success');
-                        input.value = '';
-                    }
-                });
-            }
-        }
-        
-        // ========== CHECK INITIAL LOGIN STATE ON PAGE LOAD ==========
-        
-        function checkInitialLoginState() {
-            const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
-            
-            // Clean up any orphaned logoutEvent
-            if (localStorage.getItem('logoutEvent')) {
-                // If there was a logout event but isLoggedIn is still true, clean up
-                if (isLoggedIn) {
-                    localStorage.removeItem('isLoggedIn');
-                }
-                localStorage.removeItem('logoutEvent');
-            }
-            
-            return isLoggedIn;
-        }
-        
-        // ========== ADD ANIMATION STYLES ==========
-        
-        function addAnimationStyles() {
-            if (!document.getElementById('custom-animation-styles')) {
-                const style = document.createElement('style');
-                style.id = 'custom-animation-styles';
-                style.textContent = `
-                    @keyframes slideIn {
-                        from { transform: translateX(100%); opacity: 0; }
-                        to { transform: translateX(0); opacity: 1; }
-                    }
-                    @keyframes slideOut {
-                        from { transform: translateX(0); opacity: 1; }
-                        to { transform: translateX(100%); opacity: 0; }
-                    }
-                    .scroll-top {
-                        position: fixed;
-                        bottom: 30px;
-                        right: 30px;
-                        width: 45px;
-                        height: 45px;
-                        background: linear-gradient(135deg, #FF6B35, #7209B7);
-                        color: white;
-                        border: none;
-                        border-radius: 50%;
-                        cursor: pointer;
-                        display: none;
-                        align-items: center;
-                        justify-content: center;
-                        font-size: 1.3rem;
-                        z-index: 999;
-                        transition: all 0.3s ease;
-                    }
-                    .scroll-top:hover {
-                        transform: translateY(-5px);
-                    }
-                `;
-                document.head.appendChild(style);
-            }
-        }
-        
-        // ========== INITIALIZE EVERYTHING ==========
+        // ========== INITIALIZATION ==========
         
         document.addEventListener('DOMContentLoaded', function() {
-            addAnimationStyles();
-            initDarkMode();
-            initScrollToTop();
-            initMobileMenu();
-            initNewsletter();
-            
-            // Check initial login state
-            checkInitialLoginState();
-            
-            // Update navbar based on login status
-            checkLoginStatusAndUpdateNavbar();
-            
             // Protect protected links
             protectProtectedLinks();
-            
-            // Listen for logout events from other tabs
-            listenForLogoutFromOtherTabs();
             
             // Close modal when clicking outside
             const modal = document.getElementById('logoutModal');
@@ -481,13 +353,15 @@
                     }
                 });
             }
+            
+            // NOTE: navbar update, dark mode, mobile menu, scroll-to-top, 
+            // newsletter, and dropdown are all handled by common.js
         });
         
         // Make functions globally available
         window.showLogoutConfirm = showLogoutConfirm;
         window.closeLogoutModal = closeLogoutModal;
         window.confirmLogout = confirmLogout;
-        window.toggleDarkMode = toggleDarkMode;
         window.showNotificationMessage = showNotificationMessage;
     </script>
 
@@ -508,20 +382,20 @@
     <div class="container" style="max-width: 1200px; margin: -50px auto 0; position: relative; z-index: 2; padding: 0 20px;">
         <div class="grid grid-4" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem;">
             <div class="stat-card">
-                <div class="stat-number">10K+</div>
-                <div>Active Users</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-number">5K+</div>
-                <div>Recipes Shared</div>
-            </div>
-            <div class="stat-card">
                 <div class="stat-number">50+</div>
-                <div>Weekly Challenges</div>
+                <div>Registered Users</div>
             </div>
             <div class="stat-card">
-                <div class="stat-number">100K+</div>
-                <div>Total Likes</div>
+                <div class="stat-number">30+</div>
+                <div>Recipes Added</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">4</div>
+                <div>Active Challenges</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">Growing</div>
+                <div>Community</div>
             </div>
         </div>
     </div>

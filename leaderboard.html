@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Leaderboard - Sizzle & Share</title>
+    <link rel="stylesheet" href="css/main.css">
+    <style>
+        .leaderboard-hero {
+            background: linear-gradient(135deg, var(--color-primary), var(--color-accent));
+            color: white;
+            padding: 4rem 2rem;
+            text-align: center;
+        }
+        
+        .leaderboard-container {
+            max-width: 900px;
+            margin: 2rem auto;
+            padding: 0 2rem;
+        }
+        
+        .filter-bar {
+            display: flex;
+            gap: 1rem;
+            justify-content: flex-end;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+        }
+        
+        .filter-select {
+            padding: 0.5rem 1rem;
+            border: 2px solid var(--color-border);
+            border-radius: var(--radius-md);
+            font-family: inherit;
+            cursor: pointer;
+        }
+        
+        .leaderboard-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem;
+            background: white;
+            margin-bottom: 0.75rem;
+            border-radius: var(--radius-lg);
+            transition: all 0.3s ease;
+            animation: slideRight 0.3s ease;
+        }
+        
+        .leaderboard-item:hover {
+            transform: translateX(5px);
+            box-shadow: var(--shadow-md);
+        }
+        
+        .rank {
+            font-size: 1.5rem;
+            font-weight: bold;
+            width: 60px;
+            text-align: center;
+        }
+        
+        .rank-1 { color: #FFD700; text-shadow: 0 0 10px rgba(255,215,0,0.5); }
+        .rank-2 { color: #C0C0C0; }
+        .rank-3 { color: #CD7F32; }
+        
+        .avatar {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            background: linear-gradient(135deg, var(--color-secondary), #4895EF);
+        }
+        
+        .info {
+            flex: 1;
+        }
+        
+        .score {
+            font-size: 1.25rem;
+            font-weight: bold;
+            color: var(--color-primary);
+        }
+        
+        .medal-animation {
+            animation: bounce 1s ease infinite;
+            display: inline-block;
+        }
+        
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-5px); }
+        }
+        
+        @keyframes slideRight {
+            from {
+                opacity: 0;
+                transform: translateX(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .leaderboard-item {
+                flex-wrap: wrap;
+            }
+            .rank { width: 40px; font-size: 1.2rem; }
+            .avatar { width: 50px; height: 50px; font-size: 1.5rem; }
+            .filter-bar { justify-content: center; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="navbar-container">
+            <a href="index.html" class="navbar-logo">
+                <span class="logo-icon">🍳</span>
+                <span class="logo-text">Sizzle &amp; Share</span>
+            </a>
+            <button class="menu-btn" id="menuBtn" aria-label="Toggle menu" aria-expanded="false">
+                <span></span><span></span><span></span>
+            </button>
+            <ul class="nav-menu" id="navMenu">
+                <!-- Public links always visible -->
+                <li class="nav-item"><a href="index.html" class="nav-link">Home</a></li>
+                <li class="nav-item"><a href="gallery.html" class="nav-link">Gallery</a></li>
+                <li class="nav-item"><a href="leaderboard.html" class="nav-link active">Leaderboard</a></li>
+                <li class="nav-item"><a href="about.html" class="nav-link">About</a></li>
+                <!-- Guest only: shown when NOT logged in -->
+                <li class="nav-item guest-only"><a href="login.html" class="btn btn-primary btn-sm">Login</a></li>
+                <li class="nav-item guest-only"><a href="signup.html" class="btn btn-outline btn-sm">Sign Up</a></li>
+                <!-- User dropdown: shown ONLY when logged in -->
+                <li class="nav-item user-only user-dropdown" id="userDropdown">
+                    <button class="user-dropdown-toggle" aria-haspopup="true" aria-expanded="false">
+                        <span class="user-avatar-badge">U</span>
+                        <span id="dropdownUsername">Account</span>
+                        <span class="dropdown-arrow">▼</span>
+                    </button>
+                    <div class="user-dropdown-menu" role="menu">
+                        <div class="dropdown-header">
+                            <div class="dropdown-header-name">Username</div>
+                            <div class="dropdown-header-email"></div>
+                        </div>
+                        <a href="user/dashboard.html" class="dropdown-item" role="menuitem"><span class="item-icon">📊</span> Dashboard</a>
+                        <a href="user/profile.html" class="dropdown-item" role="menuitem"><span class="item-icon">👤</span> My Profile</a>
+                        <a href="upload.html" class="dropdown-item" role="menuitem"><span class="item-icon">📸</span> Upload Photo</a>
+                        <a href="ingredients.html" class="dropdown-item" role="menuitem"><span class="item-icon">🥦</span> Ingredients</a>
+                        <a href="recipes.html" class="dropdown-item" role="menuitem"><span class="item-icon">📖</span> Recipes</a>
+                        <a href="challenge.html" class="dropdown-item" role="menuitem"><span class="item-icon">🏆</span> Challenge</a>
+                        <div class="dropdown-divider"></div>
+                        <button class="dropdown-item logout-item" onclick="logout()" role="menuitem"><span class="item-icon">🚪</span> Logout</button>
+                    </div>
+                </li>
+                <li class="nav-item"><button class="theme-toggle" id="darkModeToggle" onclick="toggleDarkMode()">🌙</button></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <div class="leaderboard-hero">
+        <h1>🏆 Weekly Leaderboard</h1>
+        <p>Top chefs competing for the crown!</p>
+    </div>
+
+    <!-- Leaderboard Container -->
+    <div class="leaderboard-container">
+        <div class="filter-bar">
+            <select id="periodFilter" class="filter-select">
+                <option value="weekly">Weekly</option>
+                <option value="monthly">Monthly</option>
+                <option value="alltime">All Time</option>
+            </select>
+            <select id="sortFilter" class="filter-select">
+                <option value="rank">Sort by Rank</option>
+                <option value="score">Sort by Score</option>
+                <option value="dishes">Sort by Dishes</option>
+            </select>
+        </div>
+        <div id="leaderboardList"></div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-container">
+            <div class="footer-section">
+                <h3>🍳 Sizzle & Share</h3>
+                <p>Cook, Capture, Challenge - Share Your Culinary Magic!</p>
+                <div class="social-links">
+                    <a href="#" class="social-link">📷</a>
+                    <a href="#" class="social-link">📘</a>
+                    <a href="#" class="social-link">🐦</a>
+                    <a href="#" class="social-link">📌</a>
+                </div>
+            </div>
+            <div class="footer-section">
+                <h4>Quick Links</h4>
+                <ul class="footer-links">
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="gallery.html">Gallery</a></li>
+                    <li><a href="leaderboard.html">Leaderboard</a></li>
+                    <li><a href="about.html">About</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h4>Get Fresh Recipes</h4>
+                <form class="newsletter-form" id="newsletterForm">
+                    <input type="email" placeholder="Enter your email" class="newsletter-input" required>
+                    <button type="submit" class="newsletter-btn">Subscribe</button>
+                </form>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2025 Sizzle & Share. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <button class="scroll-top" id="scrollTop">↑</button>
+
+    <script src="js/common.js"></script>
+    <script>
+        const leaderboardData = {
+            weekly: [
+                { rank: 1, name: 'Sarah Johnson', avatar: '👩‍🍳', dishes: 45, score: 4500, medal: '🥇' },
+                { rank: 2, name: 'Ahmed Khan', avatar: '🧑‍🍳', dishes: 38, score: 3800, medal: '🥈' },
+                { rank: 3, name: 'Priya Sharma', avatar: '👩‍🍳', dishes: 32, score: 3200, medal: '🥉' },
+                { rank: 4, name: 'Carlos Mendez', avatar: '🧑‍🍳', dishes: 28, score: 2800, medal: '🏅' },
+                { rank: 5, name: 'Emma Wilson', avatar: '👩‍🍳', dishes: 25, score: 2500, medal: '🏅' },
+                { rank: 6, name: 'James Brown', avatar: '👨‍🍳', dishes: 22, score: 2200, medal: '🏅' },
+                { rank: 7, name: 'Lisa Wong', avatar: '👩‍🍳', dishes: 20, score: 2000, medal: '🏅' },
+                { rank: 8, name: 'Marco Rossi', avatar: '👨‍🍳', dishes: 18, score: 1800, medal: '🏅' },
+                { rank: 9, name: 'Fatima Ali', avatar: '👩‍🍳', dishes: 15, score: 1500, medal: '🏅' },
+                { rank: 10, name: 'David Kim', avatar: '👨‍🍳', dishes: 12, score: 1200, medal: '🏅' }
+            ],
+            monthly: [
+                { rank: 1, name: 'Priya Sharma', avatar: '👩‍🍳', dishes: 120, score: 12000, medal: '🥇' },
+                { rank: 2, name: 'Sarah Johnson', avatar: '👩‍🍳', dishes: 110, score: 11000, medal: '🥈' },
+                { rank: 3, name: 'Ahmed Khan', avatar: '🧑‍🍳', dishes: 95, score: 9500, medal: '🥉' },
+                { rank: 4, name: 'Emma Wilson', avatar: '👩‍🍳', dishes: 80, score: 8000, medal: '🏅' },
+                { rank: 5, name: 'Carlos Mendez', avatar: '🧑‍🍳', dishes: 75, score: 7500, medal: '🏅' }
+            ],
+            alltime: [
+                { rank: 1, name: 'Sarah Johnson', avatar: '👩‍🍳', dishes: 450, score: 45000, medal: '🥇' },
+                { rank: 2, name: 'Priya Sharma', avatar: '👩‍🍳', dishes: 420, score: 42000, medal: '🥈' },
+                { rank: 3, name: 'Ahmed Khan', avatar: '🧑‍🍳', dishes: 380, score: 38000, medal: '🥉' },
+                { rank: 4, name: 'Emma Wilson', avatar: '👩‍🍳', dishes: 320, score: 32000, medal: '🏅' },
+                { rank: 5, name: 'Carlos Mendez', avatar: '🧑‍🍳', dishes: 290, score: 29000, medal: '🏅' }
+            ]
+        };
+        
+        let currentPeriod = 'weekly';
+        let currentSort = 'rank';
+        
+        function renderLeaderboard() {
+            let data = [...leaderboardData[currentPeriod]];
+            
+            if (currentSort === 'score') {
+                data.sort((a, b) => b.score - a.score);
+                data = data.map((item, idx) => ({ ...item, rank: idx + 1 }));
+            } else if (currentSort === 'dishes') {
+                data.sort((a, b) => b.dishes - a.dishes);
+                data = data.map((item, idx) => ({ ...item, rank: idx + 1 }));
+            }
+            
+            const container = document.getElementById('leaderboardList');
+            container.innerHTML = data.map(leader => `
+                <div class="leaderboard-item" style="animation-delay: ${leader.rank * 0.05}s">
+                    <div class="rank rank-${leader.rank}">
+                        ${leader.rank <= 3 ? `<span class="medal-animation">${leader.medal}</span>` : `#${leader.rank}`}
+                    </div>
+                    <div class="avatar">${leader.avatar}</div>
+                    <div class="info">
+                        <strong>${leader.name}</strong>
+                        <div><small>${leader.dishes} dishes cooked</small></div>
+                    </div>
+                    <div class="score">${leader.score.toLocaleString()} pts</div>
+                </div>
+            `).join('');
+        }
+        
+        document.getElementById('periodFilter').addEventListener('change', (e) => {
+            currentPeriod = e.target.value;
+            renderLeaderboard();
+            showNotification(`Showing ${currentPeriod} rankings`, 'info');
+        });
+        
+        document.getElementById('sortFilter').addEventListener('change', (e) => {
+            currentSort = e.target.value;
+            renderLeaderboard();
+        });
+        
+        renderLeaderboard();
+    
+        // Cross-tab logout: if another tab logs out, update this page too
+        window.addEventListener('storage', function(e) {
+            if (e.key === 'isLoggedIn' && e.newValue !== 'true') {
+                updateNavbar();
+            }
+            if (e.key === 'logoutEvent') {
+                localStorage.removeItem('isLoggedIn');
+                localStorage.removeItem('username');
+                localStorage.removeItem('userEmail');
+                updateNavbar();
+            }
+        });
+</script>
+</body>
+</html>
