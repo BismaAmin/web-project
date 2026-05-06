@@ -1,0 +1,775 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weekly Challenge - Sizzle & Share</title>
+    <link rel="stylesheet" href="css/main.css">
+    <style>
+        .challenge-hero {
+            background: linear-gradient(135deg, var(--color-success), var(--color-secondary));
+            color: white;
+            padding: 4rem 2rem;
+            text-align: center;
+        }
+        
+        .challenge-container {
+            max-width: 1000px;
+            margin: 2rem auto;
+            padding: 0 2rem;
+        }
+        
+        .active-challenge {
+            background: linear-gradient(135deg, var(--color-primary), var(--color-purple));
+            color: white;
+            border-radius: var(--radius-xl);
+            padding: 2rem;
+            text-align: center;
+            margin-bottom: 2rem;
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.02); }
+        }
+        
+        .countdown {
+            font-size: 2.5rem;
+            font-weight: bold;
+            font-family: monospace;
+            margin: 1rem 0;
+            background: rgba(0,0,0,0.2);
+            display: inline-block;
+            padding: 0.5rem 1.5rem;
+            border-radius: var(--radius-full);
+        }
+        
+        .submission-form {
+            background: white;
+            border-radius: var(--radius-lg);
+            padding: 2rem;
+            margin-top: 2rem;
+            box-shadow: var(--shadow-lg);
+        }
+        
+        .past-challenges {
+            margin-top: 2rem;
+        }
+        
+        .past-challenge-item {
+            background: white;
+            border-radius: var(--radius-lg);
+            padding: 1rem;
+            margin-bottom: 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+        
+        .past-challenge-item:hover {
+            transform: translateX(5px);
+            box-shadow: var(--shadow-md);
+        }
+        
+        .winner-badge {
+            background: linear-gradient(135deg, #FFD700, #FFA500);
+            color: white;
+            padding: 0.25rem 0.75rem;
+            border-radius: var(--radius-full);
+            font-size: 0.75rem;
+            font-weight: bold;
+        }
+        
+        /* Modal Styles */
+        .results-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.7);
+            z-index: 2000;
+            align-items: center;
+            justify-content: center;
+            animation: fadeIn 0.3s ease;
+        }
+        
+        .results-modal.show {
+            display: flex;
+        }
+        
+        .modal-content {
+            background: white;
+            border-radius: var(--radius-xl);
+            max-width: 600px;
+            width: 90%;
+            max-height: 85vh;
+            overflow-y: auto;
+            animation: slideUp 0.3s ease;
+        }
+        
+        .modal-header {
+            background: linear-gradient(135deg, var(--color-primary), var(--color-purple));
+            color: white;
+            padding: 1.5rem;
+            text-align: center;
+            position: relative;
+        }
+        
+        .modal-close {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: rgba(255,255,255,0.2);
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.3s;
+        }
+        
+        .modal-close:hover {
+            background: rgba(255,255,255,0.3);
+        }
+        
+        .modal-body {
+            padding: 1.5rem;
+        }
+        
+        .winner-section {
+            text-align: center;
+            padding: 1rem;
+            background: linear-gradient(135deg, #FFF9F0, #FFE8D6);
+            border-radius: var(--radius-lg);
+            margin-bottom: 1.5rem;
+        }
+        
+        .winner-avatar {
+            font-size: 4rem;
+        }
+        
+        .winner-name {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--color-primary);
+        }
+        
+        .winner-dish {
+            font-size: 1.2rem;
+            color: var(--color-purple);
+        }
+        
+        .participant-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 0.75rem;
+            border-bottom: 1px solid var(--color-border);
+        }
+        
+        .participant-rank {
+            font-size: 1.2rem;
+            font-weight: bold;
+            width: 50px;
+        }
+        
+        .rank-1 { color: #FFD700; }
+        .rank-2 { color: #C0C0C0; }
+        .rank-3 { color: #CD7F32; }
+        
+        .participant-avatar {
+            font-size: 2rem;
+        }
+        
+        .participant-info {
+            flex: 1;
+        }
+        
+        .participant-votes {
+            color: var(--color-primary);
+            font-weight: bold;
+        }
+        
+        .submission-card {
+            background: #f9f9f9;
+            border-radius: var(--radius-lg);
+            padding: 1rem;
+            margin-bottom: 1rem;
+        }
+        
+        .submission-dish {
+            font-size: 1rem;
+            font-weight: bold;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        @keyframes slideUp {
+            from {
+                transform: translateY(50px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .past-challenge-item {
+                flex-direction: column;
+                gap: 0.5rem;
+                text-align: center;
+            }
+            .countdown { font-size: 1.5rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Navbar -->
+   <!-- Navbar -->
+<nav class="navbar">
+        <div class="navbar-container">
+            <a href="index.html" class="navbar-logo">
+                <span class="logo-icon">🍳</span>
+                <span class="logo-text">Sizzle &amp; Share</span>
+            </a>
+            <button class="menu-btn" id="menuBtn" aria-label="Toggle menu" aria-expanded="false">
+                <span></span><span></span><span></span>
+            </button>
+            <ul class="nav-menu" id="navMenu">
+                <!-- Public links always visible -->
+                <li class="nav-item"><a href="index.html" class="nav-link">Home</a></li>
+                <li class="nav-item"><a href="gallery.html" class="nav-link">Gallery</a></li>
+                <li class="nav-item"><a href="leaderboard.html" class="nav-link">Leaderboard</a></li>
+                <li class="nav-item"><a href="about.html" class="nav-link">About</a></li>
+                <!-- Guest only: shown when NOT logged in -->
+                <li class="nav-item guest-only"><a href="login.html" class="btn btn-primary btn-sm">Login</a></li>
+                <li class="nav-item guest-only"><a href="signup.html" class="btn btn-outline btn-sm">Sign Up</a></li>
+                <!-- User dropdown: shown ONLY when logged in -->
+                <li class="nav-item user-only user-dropdown" id="userDropdown">
+                    <button class="user-dropdown-toggle" aria-haspopup="true" aria-expanded="false">
+                        <span class="user-avatar-badge">U</span>
+                        <span id="dropdownUsername">Account</span>
+                        <span class="dropdown-arrow">▼</span>
+                    </button>
+                    <div class="user-dropdown-menu" role="menu">
+                        <div class="dropdown-header">
+                            <div class="dropdown-header-name">Username</div>
+                            <div class="dropdown-header-email"></div>
+                        </div>
+                        <a href="user/dashboard.html" class="dropdown-item" role="menuitem"><span class="item-icon">📊</span> Dashboard</a>
+                        <a href="user/profile.html" class="dropdown-item" role="menuitem"><span class="item-icon">👤</span> My Profile</a>
+                        <a href="upload.html" class="dropdown-item" role="menuitem"><span class="item-icon">📸</span> Upload Photo</a>
+                        <a href="ingredients.html" class="dropdown-item" role="menuitem"><span class="item-icon">🥦</span> Ingredients</a>
+                        <a href="recipes.html" class="dropdown-item" role="menuitem"><span class="item-icon">📖</span> Recipes</a>
+                        <a href="challenge.html" class="dropdown-item" role="menuitem"><span class="item-icon">🏆</span> Challenge</a>
+                        <div class="dropdown-divider"></div>
+                        <button class="dropdown-item logout-item" onclick="logout()" role="menuitem"><span class="item-icon">🚪</span> Logout</button>
+                    </div>
+                </li>
+                <li class="nav-item"><button class="theme-toggle" id="darkModeToggle" onclick="toggleDarkMode()">🌙</button></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Page Content (Hidden until login check passes) -->
+    <div id="pageContent" style="display: none;">
+        <!-- Hero Section -->
+        <div class="challenge-hero">
+            <h1>🏆 Weekly Cooking Challenge</h1>
+            <p>Compete with food lovers around the world!</p>
+        </div>
+
+        <!-- Challenge Container -->
+        <div class="challenge-container">
+            <div class="active-challenge">
+                <h2>🍝 Week 5: Pasta Paradise</h2>
+                <p>Create the most delicious pasta dish! Get creative with sauces, toppings, and presentation.</p>
+                <div class="countdown" id="countdown">Loading...</div>
+                <div>👥 <span id="participantCount">234</span> participants</div>
+                <div>🏆 Prize: Premium Cooking Kit + Featured Chef Badge</div>
+                <button class="btn btn-light" id="joinChallengeBtn" style="margin-top: 1rem; color: var(--color-primary);">🎯 Join Challenge Now</button>
+            </div>
+            
+            <div class="submission-form" id="submissionForm" style="display: none;">
+                <h3>📤 Submit Your Dish</h3>
+                <form id="challengeSubmitForm">
+                    <div class="form-group">
+                        <label>Dish Name</label>
+                        <input type="text" name="dish_name" required placeholder="e.g., Creamy Mushroom Pasta">
+                    </div>
+                    <div class="form-group">
+                        <label>Your Creation Story</label>
+                        <textarea name="description" rows="3" placeholder="Describe your dish, ingredients used, and cooking process..."></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>Upload Photo</label>
+                        <input type="file" accept="image/*" id="challengeImage">
+                        <small>Upload your masterpiece!</small>
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-block" style="width: 100%;">Submit Entry 🎉</button>
+                </form>
+            </div>
+            
+            <div class="past-challenges">
+                <h3>📅 Past Challenges</h3>
+                <div class="past-challenge-item" data-challenge-id="4" data-challenge-name="Vegan Delight">
+                    <span>🥗 Week 4: Vegan Delight</span>
+                    <span><span class="winner-badge">🏆 Winner: @sarah_j</span></span>
+                    <button class="btn btn-outline btn-sm view-results-btn">View Results</button>
+                </div>
+                <div class="past-challenge-item" data-challenge-id="3" data-challenge-name="15-Min Meals">
+                    <span>⚡ Week 3: 15-Min Meals</span>
+                    <span><span class="winner-badge">🏆 Winner: @ahmed_k</span></span>
+                    <button class="btn btn-outline btn-sm view-results-btn">View Results</button>
+                </div>
+                <div class="past-challenge-item" data-challenge-id="2" data-challenge-name="Baking Masters">
+                    <span>🍰 Week 2: Baking Masters</span>
+                    <span><span class="winner-badge">🏆 Winner: @priya_s</span></span>
+                    <button class="btn btn-outline btn-sm view-results-btn">View Results</button>
+                </div>
+                <div class="past-challenge-item" data-challenge-id="1" data-challenge-name="Asian Fusion">
+                    <span>🍜 Week 1: Asian Fusion</span>
+                    <span><span class="winner-badge">🏆 Winner: @ming_l</span></span>
+                    <button class="btn btn-outline btn-sm view-results-btn">View Results</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Results Modal -->
+    <div id="resultsModal" class="results-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button class="modal-close" id="closeModalBtn">&times;</button>
+                <h2 id="modalTitle">Challenge Results</h2>
+            </div>
+            <div class="modal-body" id="modalBody">
+                <!-- Dynamic content will be inserted here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer" id="footer" style="display: none;">
+        <div class="footer-container">
+            <div class="footer-section">
+                <h3>🍳 Sizzle & Share</h3>
+                <p>Cook, Capture, Challenge - Share Your Culinary Magic!</p>
+                <div class="social-links">
+                    <a href="#" class="social-link">📷</a>
+                    <a href="#" class="social-link">📘</a>
+                    <a href="#" class="social-link">🐦</a>
+                    <a href="#" class="social-link">📌</a>
+                </div>
+            </div>
+            <div class="footer-section">
+                <h4>Quick Links</h4>
+                <ul class="footer-links">
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="recipes.html">Recipes</a></li>
+                    <li><a href="challenge.html">Challenges</a></li>
+                    <li><a href="leaderboard.html">Leaderboard</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h4>Get Fresh Recipes</h4>
+                <form class="newsletter-form" id="newsletterForm">
+                    <input type="email" placeholder="Enter your email" class="newsletter-input" required>
+                    <button type="submit" class="newsletter-btn">Subscribe</button>
+                </form>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2025 Sizzle & Share. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <!-- Scroll to Top Button -->
+    <button class="scroll-top" id="scrollTop">↑</button>
+
+    <script>
+        // ========== DIRECT REDIRECT - NO POPUP, NO DIALOG ==========
+        
+        // Check authentication - DIRECT REDIRECT to login if not logged in
+        async function checkAuthentication() {
+            try {
+                const response = await fetch('php/check-session.php');
+                const data = await response.json();
+                
+                if (!data.logged_in) {
+                    // DIRECT REDIRECT - No dialog, no popup, no delay
+                    window.location.href = 'login.html';
+                    return;
+                }
+                
+                // User is logged in - show the page content
+                document.getElementById('pageContent').style.display = 'block';
+                document.getElementById('footer').style.display = 'block';
+                
+                // Initialize all page features
+                initializePage();
+                
+            } catch (error) {
+                // On error, directly redirect to login
+                window.location.href = 'login.html';
+            }
+        }
+        
+        // Initialize all page features (only runs when logged in)
+        function initializePage() {
+            // Past challenges data
+            const pastChallengesData = {
+                1: {
+                    id: 1, name: "Asian Fusion", week: 1,
+                    winner: { username: "ming_l", full_name: "Ming Lee", avatar: "🥢", dish_name: "Sushi Burrito", dish_description: "A fusion of Japanese sushi and Mexican burrito.", votes: 342, image: "🍱" },
+                    top_participants: [
+                        { rank: 1, username: "ming_l", full_name: "Ming Lee", dish_name: "Sushi Burrito", votes: 342, avatar: "🥢" },
+                        { rank: 2, username: "sarah_j", full_name: "Sarah Johnson", dish_name: "Kimchi Ramen", votes: 298, avatar: "🍜" },
+                        { rank: 3, username: "ahmed_k", full_name: "Ahmed Khan", dish_name: "Thai Green Curry", votes: 256, avatar: "🍛" }
+                    ],
+                    all_submissions: [
+                        { username: "ming_l", dish_name: "Sushi Burrito", votes: 342, avatar: "🥢" },
+                        { username: "sarah_j", dish_name: "Kimchi Ramen", votes: 298, avatar: "🍜" },
+                        { username: "ahmed_k", dish_name: "Thai Green Curry", votes: 256, avatar: "🍛" }
+                    ],
+                    total_participants: 156, date: "January 2024"
+                },
+                2: {
+                    id: 2, name: "Baking Masters", week: 2,
+                    winner: { username: "priya_s", full_name: "Priya Sharma", avatar: "🎂", dish_name: "Triple Chocolate Cake", dish_description: "Three layers of rich chocolate cake.", votes: 423, image: "🍰" },
+                    top_participants: [
+                        { rank: 1, username: "priya_s", full_name: "Priya Sharma", dish_name: "Triple Chocolate Cake", votes: 423, avatar: "🎂" },
+                        { rank: 2, username: "lisa_c", full_name: "Lisa Chen", dish_name: "Croissants", votes: 387, avatar: "🥐" },
+                        { rank: 3, username: "emma_w", full_name: "Emma Watson", dish_name: "Cheesecake", votes: 312, avatar: "🍰" }
+                    ],
+                    all_submissions: [
+                        { username: "priya_s", dish_name: "Triple Chocolate Cake", votes: 423, avatar: "🎂" },
+                        { username: "lisa_c", dish_name: "Croissants", votes: 387, avatar: "🥐" },
+                        { username: "emma_w", dish_name: "Cheesecake", votes: 312, avatar: "🍰" }
+                    ],
+                    total_participants: 203, date: "February 2024"
+                },
+                3: {
+                    id: 3, name: "15-Min Meals", week: 3,
+                    winner: { username: "ahmed_k", full_name: "Ahmed Khan", avatar: "⚡", dish_name: "Quick Chicken Stir Fry", dish_description: "Ready in 12 minutes!", votes: 289, image: "🥘" },
+                    top_participants: [
+                        { rank: 1, username: "ahmed_k", full_name: "Ahmed Khan", dish_name: "Quick Chicken Stir Fry", votes: 289, avatar: "⚡" },
+                        { rank: 2, username: "sarah_j", full_name: "Sarah Johnson", dish_name: "15-Min Pasta", votes: 267, avatar: "🍝" },
+                        { rank: 3, username: "mohamed_a", full_name: "Mohamed Ali", dish_name: "Egg Fried Rice", votes: 234, avatar: "🍚" }
+                    ],
+                    all_submissions: [
+                        { username: "ahmed_k", dish_name: "Quick Chicken Stir Fry", votes: 289, avatar: "⚡" },
+                        { username: "sarah_j", dish_name: "15-Min Pasta", votes: 267, avatar: "🍝" },
+                        { username: "mohamed_a", dish_name: "Egg Fried Rice", votes: 234, avatar: "🍚" }
+                    ],
+                    total_participants: 187, date: "March 2024"
+                },
+                4: {
+                    id: 4, name: "Vegan Delight", week: 4,
+                    winner: { username: "sarah_j", full_name: "Sarah Johnson", avatar: "🌱", dish_name: "Mushroom Wellington", dish_description: "A vegan twist on classic beef wellington.", votes: 456, image: "🥧" },
+                    top_participants: [
+                        { rank: 1, username: "sarah_j", full_name: "Sarah Johnson", dish_name: "Mushroom Wellington", votes: 456, avatar: "🌱" },
+                        { rank: 2, username: "lisa_c", full_name: "Lisa Chen", dish_name: "Buddha Bowl", votes: 398, avatar: "🥗" },
+                        { rank: 3, username: "priya_s", full_name: "Priya Sharma", dish_name: "Vegan Curry", votes: 345, avatar: "🍛" }
+                    ],
+                    all_submissions: [
+                        { username: "sarah_j", dish_name: "Mushroom Wellington", votes: 456, avatar: "🌱" },
+                        { username: "lisa_c", dish_name: "Buddha Bowl", votes: 398, avatar: "🥗" },
+                        { username: "priya_s", dish_name: "Vegan Curry", votes: 345, avatar: "🍛" }
+                    ],
+                    total_participants: 234, date: "April 2024"
+                }
+            };
+
+            // Show challenge results modal
+            function showChallengeResults(challengeId) {
+                const challenge = pastChallengesData[challengeId];
+                if (!challenge) {
+                    showNotification('Challenge data not found', 'error');
+                    return;
+                }
+
+                const modal = document.getElementById('resultsModal');
+                const modalTitle = document.getElementById('modalTitle');
+                const modalBody = document.getElementById('modalBody');
+
+                modalTitle.textContent = `🏆 Week ${challenge.week}: ${challenge.name} Results`;
+
+                modalBody.innerHTML = `
+                    <div class="winner-section">
+                        <div class="winner-avatar">${challenge.winner.avatar} 👑</div>
+                        <div class="winner-name">${challenge.winner.full_name}</div>
+                        <div class="winner-dish">@${challenge.winner.username}</div>
+                        <div style="font-size: 1.5rem; margin: 0.5rem 0;">${challenge.winner.dish_name}</div>
+                        <div style="color: var(--color-text-light);">${challenge.winner.dish_description}</div>
+                        <div style="margin-top: 0.5rem;">⭐ ${challenge.winner.votes} votes</div>
+                    </div>
+
+                    <h3>🥇 Top Participants</h3>
+                    ${challenge.top_participants.map(p => `
+                        <div class="participant-item">
+                            <div class="participant-rank rank-${p.rank}">#${p.rank}</div>
+                            <div class="participant-avatar">${p.avatar}</div>
+                            <div class="participant-info">
+                                <strong>${p.full_name}</strong><br>
+                                <small>@${p.username}</small><br>
+                                <span class="submission-dish">${p.dish_name}</span>
+                            </div>
+                            <div class="participant-votes">${p.votes} votes</div>
+                        </div>
+                    `).join('')}
+
+                    <h3 style="margin-top: 1.5rem;">📋 All Submissions (${challenge.all_submissions.length})</h3>
+                    ${challenge.all_submissions.map(s => `
+                        <div class="submission-card">
+                            <div style="display: flex; align-items: center; gap: 0.5rem;">
+                                <span style="font-size: 1.5rem;">${s.avatar}</span>
+                                <div style="flex: 1;">
+                                    <strong>${s.dish_name}</strong><br>
+                                    <small>by @${s.username}</small>
+                                </div>
+                                <div>⭐ ${s.votes} votes</div>
+                            </div>
+                        </div>
+                    `).join('')}
+
+                    <div style="margin-top: 1.5rem; padding: 1rem; background: #f0f0f0; border-radius: var(--radius-lg); text-align: center;">
+                        <div>👥 Total Participants: ${challenge.total_participants}</div>
+                        <div>📅 Challenge Date: ${challenge.date}</div>
+                    </div>
+                `;
+
+                modal.classList.add('show');
+                document.body.style.overflow = 'hidden';
+            }
+
+            function closeModal() {
+                const modal = document.getElementById('resultsModal');
+                modal.classList.remove('show');
+                document.body.style.overflow = 'auto';
+            }
+
+            function showNotification(message, type) {
+                const notification = document.createElement('div');
+                notification.textContent = message;
+                notification.style.cssText = `
+                    position: fixed;
+                    bottom: 20px;
+                    right: 20px;
+                    padding: 12px 20px;
+                    border-radius: 8px;
+                    background: ${type === 'success' ? '#06D6A0' : type === 'error' ? '#EF476F' : '#4ECDC4'};
+                    color: white;
+                    z-index: 10000;
+                    animation: slideIn 0.3s ease;
+                    font-weight: 500;
+                    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+                `;
+                document.body.appendChild(notification);
+                setTimeout(() => notification.remove(), 3000);
+            }
+
+            // Countdown timer
+            let joined = localStorage.getItem('challengeJoined') === 'true';
+            let participantCount = 234;
+            let timeLeft = { days: 3, hours: 12, minutes: 30, seconds: 0 };
+
+            function updateCountdown() {
+                const countdownEl = document.getElementById('countdown');
+                if (timeLeft.days > 0 || timeLeft.hours > 0 || timeLeft.minutes > 0 || timeLeft.seconds > 0) {
+                    countdownEl.innerHTML = `${timeLeft.days}d ${timeLeft.hours}h ${timeLeft.minutes}m ${timeLeft.seconds}s`;
+                    if (timeLeft.seconds > 0) {
+                        timeLeft.seconds--;
+                    } else {
+                        timeLeft.seconds = 59;
+                        if (timeLeft.minutes > 0) {
+                            timeLeft.minutes--;
+                        } else {
+                            timeLeft.minutes = 59;
+                            if (timeLeft.hours > 0) {
+                                timeLeft.hours--;
+                            } else {
+                                timeLeft.hours = 23;
+                                if (timeLeft.days > 0) {
+                                    timeLeft.days--;
+                                }
+                            }
+                        }
+                    }
+                } else {
+                    countdownEl.innerHTML = "Challenge Ended!";
+                }
+            }
+
+            setInterval(updateCountdown, 1000);
+            updateCountdown();
+
+            const joinBtn = document.getElementById('joinChallengeBtn');
+            const submissionForm = document.getElementById('submissionForm');
+
+            if (joined) {
+                submissionForm.style.display = 'block';
+                joinBtn.textContent = '✓ Already Joined';
+                joinBtn.disabled = true;
+                joinBtn.style.opacity = '0.6';
+            }
+
+            joinBtn.addEventListener('click', () => {
+                joined = true;
+                localStorage.setItem('challengeJoined', 'true');
+                submissionForm.style.display = 'block';
+                joinBtn.textContent = '✓ Joined Successfully!';
+                joinBtn.disabled = true;
+                joinBtn.style.opacity = '0.6';
+                
+                participantCount++;
+                document.getElementById('participantCount').textContent = participantCount;
+                
+                showNotification('You joined the challenge! Good luck! 🎉', 'success');
+                confetti();
+            });
+
+            const submitForm = document.getElementById('challengeSubmitForm');
+submitForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const dishName = submitForm.querySelector('input[name="dish_name"]').value;
+    const description = submitForm.querySelector('textarea[name="description"]').value;
+    const imageFile = document.getElementById('challengeImage').files[0];
+    
+    if (!dishName || !description) {
+        showNotification('Please fill all fields!', 'error');
+        return;
+    }
+    
+    if (!imageFile) {
+        showNotification('Please upload a photo of your dish!', 'error');
+        return;
+    }
+    
+    showNotification('Uploading your submission...', 'info');
+    
+    // Step 1: Upload image to server
+    const formData = new FormData();
+    formData.append('dish_name', dishName);
+    formData.append('description', description);
+    formData.append('dish_image', imageFile);
+    
+    try {
+        const uploadResponse = await fetch('php/upload-process.php', {
+            method: 'POST',
+            body: formData
+        });
+        const uploadResult = await uploadResponse.json();
+        
+        if (!uploadResult.success) {
+            showNotification('Upload failed: ' + uploadResult.message, 'error');
+            return;
+        }
+        
+        // Step 2: Submit to challenge with the upload_id
+        const challengeData = new URLSearchParams();
+        challengeData.append('challenge_id', 5); // Current week's challenge
+        challengeData.append('upload_id', uploadResult.upload_id);
+        
+        const challengeResponse = await fetch('php/challenges/submit-challenge.php', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+            body: challengeData
+        });
+        const challengeResult = await challengeResponse.json();
+        
+        if (challengeResult.success) {
+            showNotification('Your entry has been submitted! Good luck! 🎉', 'success');
+            submitForm.reset();
+            document.getElementById('challengeImage').value = '';
+            confetti();
+        } else {
+            showNotification(challengeResult.message || 'Submission failed', 'error');
+        }
+        
+    } catch (error) {
+        showNotification('Network error. Please try again.', 'error');
+    }
+});
+
+            function confetti() {
+                const colors = ['#FF6B35', '#4ECDC4', '#FFE66D', '#06D6A0', '#7209B7'];
+                for (let i = 0; i < 100; i++) {
+                    const confetti = document.createElement('div');
+                    confetti.style.cssText = `
+                        position: fixed;
+                        width: 10px;
+                        height: 10px;
+                        background: ${colors[Math.floor(Math.random() * colors.length)]};
+                        left: ${Math.random() * 100}%;
+                        top: -10px;
+                        border-radius: 50%;
+                        pointer-events: none;
+                        z-index: 10000;
+                        animation: fall ${Math.random() * 2 + 2}s linear forwards;
+                    `;
+                    document.body.appendChild(confetti);
+                    setTimeout(() => confetti.remove(), 3000);
+                }
+            }
+
+            const style = document.createElement('style');
+            style.textContent = `
+                @keyframes fall {
+                    to { transform: translateY(100vh) rotate(360deg); opacity: 0; }
+                }
+                @keyframes slideIn {
+                    from { transform: translateX(100%); opacity: 0; }
+                    to { transform: translateX(0); opacity: 1; }
+                }
+            `;
+            document.head.appendChild(style);
+
+            document.getElementById('closeModalBtn').addEventListener('click', closeModal);
+            const modal = document.getElementById('resultsModal');
+            modal.addEventListener('click', (e) => {
+                if (e.target === modal) closeModal();
+            });
+
+            const buttons = document.querySelectorAll('.view-results-btn');
+            buttons.forEach(button => {
+                button.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    const parent = button.closest('.past-challenge-item');
+                    const challengeId = parent.getAttribute('data-challenge-id');
+                    if (challengeId) showChallengeResults(parseInt(challengeId));
+                });
+            });
+        }
+        // Authentication check
+        checkAuthentication();
+    </script>
+    <script src="js/common.js">
+        // Cross-tab logout: if another tab logs out, update this page too
+        window.addEventListener('storage', function(e) {
+            if (e.key === 'logoutEvent') {
+                localStorage.removeItem('isLoggedIn');
+                localStorage.removeItem('username');
+                localStorage.removeItem('userEmail');
+                if (typeof updateNavbar === 'function') updateNavbar();
+            }
+        });
+</script>
+</body>
+</html>

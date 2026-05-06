@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Sizzle & Share</title>
+    <link rel="stylesheet" href="css/main.css">
+</head>
+<body>
+<script>
+    // Redirect to dashboard if already logged in
+    (function() {
+        if (localStorage.getItem('isLoggedIn') === 'true') {
+            window.location.replace('user/dashboard.html');
+        }
+    })();
+</script>
+
+<!-- Navbar -->
+<nav class="navbar">
+        <div class="navbar-container">
+            <a href="index.html" class="navbar-logo">
+                <span class="logo-icon">🍳</span>
+                <span class="logo-text">Sizzle &amp; Share</span>
+            </a>
+            <button class="menu-btn" id="menuBtn" aria-label="Toggle menu" aria-expanded="false">
+                <span></span><span></span><span></span>
+            </button>
+            <ul class="nav-menu" id="navMenu">
+                <!-- Public links always visible -->
+                <li class="nav-item"><a href="index.html" class="nav-link">Home</a></li>
+                <li class="nav-item"><a href="gallery.html" class="nav-link">Gallery</a></li>
+                <li class="nav-item"><a href="leaderboard.html" class="nav-link">Leaderboard</a></li>
+                <li class="nav-item"><a href="about.html" class="nav-link">About</a></li>
+                <!-- Guest only: shown when NOT logged in -->
+                <li class="nav-item guest-only"><a href="login.html" class="btn btn-primary btn-sm">Login</a></li>
+                <li class="nav-item guest-only"><a href="signup.html" class="btn btn-outline btn-sm">Sign Up</a></li>
+                <!-- User dropdown: shown ONLY when logged in -->
+                <li class="nav-item user-only user-dropdown" id="userDropdown">
+                    <button class="user-dropdown-toggle" aria-haspopup="true" aria-expanded="false">
+                        <span class="user-avatar-badge">U</span>
+                        <span id="dropdownUsername">Account</span>
+                        <span class="dropdown-arrow">▼</span>
+                    </button>
+                    <div class="user-dropdown-menu" role="menu">
+                        <div class="dropdown-header">
+                            <div class="dropdown-header-name">Username</div>
+                            <div class="dropdown-header-email"></div>
+                        </div>
+                        <a href="user/dashboard.html" class="dropdown-item" role="menuitem"><span class="item-icon">📊</span> Dashboard</a>
+                        <a href="user/profile.html" class="dropdown-item" role="menuitem"><span class="item-icon">👤</span> My Profile</a>
+                        <a href="upload.html" class="dropdown-item" role="menuitem"><span class="item-icon">📸</span> Upload Photo</a>
+                        <a href="ingredients.html" class="dropdown-item" role="menuitem"><span class="item-icon">🥦</span> Ingredients</a>
+                        <a href="recipes.html" class="dropdown-item" role="menuitem"><span class="item-icon">📖</span> Recipes</a>
+                        <a href="challenge.html" class="dropdown-item" role="menuitem"><span class="item-icon">🏆</span> Challenge</a>
+                        <div class="dropdown-divider"></div>
+                        <button class="dropdown-item logout-item" onclick="logout()" role="menuitem"><span class="item-icon">🚪</span> Logout</button>
+                    </div>
+                </li>
+                <li class="nav-item"><button class="theme-toggle" id="darkModeToggle" onclick="toggleDarkMode()">🌙</button></li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="auth-section">
+        <div class="auth-card">
+            <div style="margin-bottom:1.5rem;">
+                <h1 class="gradient-orange-yellow">Welcome Back! 👋</h1>
+                <p>Login to continue your culinary journey</p>
+            </div>
+            
+            <form id="loginForm">
+                <div class="form-group">
+                    <label>Email or Username</label>
+                    <input type="text" id="loginInput" name="login_input" required placeholder="Enter email or username">
+                    <div class="error-message" id="loginError"></div>
+                </div>
+                
+                <div class="form-group">
+                    <label>Password</label>
+                    <input type="password" id="password" name="password" required placeholder="Enter password">
+                    <div class="error-message" id="passwordError"></div>
+                </div>
+                
+                <div class="form-group">
+                    <label class="checkbox-group">
+                        <input type="checkbox" name="remember"> Remember Me
+                    </label>
+                </div>
+                
+                <button type="submit" class="btn btn-primary btn-block" style="width: 100%;">Login</button>
+            </form>
+            
+            <div class="auth-footer">
+                <a href="forgot-password.html" style="color: var(--color-primary);">Forgot Password?</a>
+                <p style="margin-top: 1rem;">Don't have an account? <a href="signup.html" style="color: var(--color-primary); font-weight: 600;">Sign Up</a></p>
+            </div>
+            
+            <div class="social-login">
+                <button class="social-btn" onclick="socialLogin('google')">📧 Google</button>
+                <button class="social-btn" onclick="socialLogin('facebook')">📘 Facebook</button>
+            </div>
+        </div>
+    </div>
+
+    <footer class="footer">
+        <div class="footer-container">
+            <div class="footer-section">
+                <h3>🍳 Sizzle & Share</h3>
+                <p>Cook, Capture, Challenge - Share Your Culinary Magic!</p>
+            </div>
+            <div class="footer-section">
+                <h4>Quick Links</h4>
+                <ul class="footer-links">
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="recipes.html">Recipes</a></li>
+                    <li><a href="challenge.html">Challenges</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2025 Sizzle & Share. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <button class="scroll-top" id="scrollTop">↑</button>
+
+    <script>
+        
+        function showNotification(message, type) {
+            const notification = document.createElement('div');
+            notification.textContent = message;
+            notification.style.cssText = `
+                position: fixed;
+                bottom: 20px;
+                right: 20px;
+                padding: 12px 20px;
+                border-radius: 8px;
+                background: ${type === 'success' ? '#2ECC71' : type === 'error' ? '#E74C3C' : '#9B59B6'};
+                color: white;
+                z-index: 10000;
+                animation: slideIn 0.3s ease;
+                font-weight: 500;
+                box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            `;
+            document.body.appendChild(notification);
+            setTimeout(() => notification.remove(), 3000);
+        }
+
+        // Mobile menu toggle
+        const menuBtn = document.getElementById('menuBtn');
+        const navMenu = document.getElementById('navMenu');
+        if(menuBtn) {
+            menuBtn.addEventListener('click', () => {
+                navMenu.classList.toggle('active');
+            });
+        }
+
+        function socialLogin(provider) {
+            showNotification(`Connecting with ${provider}...`, 'info');
+        }
+        document.getElementById('loginForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    
+    const loginInput = document.querySelector('#loginForm input[name="login_input"]').value;
+    const password = document.querySelector('#loginForm input[name="password"]').value;
+    
+    if(!loginInput || !password) {
+        showNotification('Please fill all fields', 'error');
+        return;
+    }
+    
+    // IMPORTANT: Also check demo users in localStorage
+    const users = JSON.parse(localStorage.getItem('users') || '[]');
+    const demoUsers = [
+        { email: 'test@example.com', username: 'testuser', password: '123456', name: 'Test User' },
+        { email: 'demo@example.com', username: 'demo', password: '123456', name: 'Demo User' },
+        { email: 'user@example.com', username: 'user', password: 'password', name: 'Regular User' }
+    ];
+    
+    // Check demo users first (since database might not be connected)
+    let foundUser = demoUsers.find(u => 
+        (u.email === loginInput || u.username === loginInput) && u.password === password
+    );
+    
+    // Also check registered users in localStorage
+    if (!foundUser) {
+        foundUser = users.find(u => 
+            (u.email === loginInput || u.username === loginInput) && u.password === password
+        );
+    }
+    
+    if (foundUser) {
+        // Set localStorage for frontend authentication
+        localStorage.setItem('isLoggedIn', 'true');
+        localStorage.setItem('username', foundUser.name || foundUser.username);
+        localStorage.setItem('userEmail', foundUser.email);
+        
+        showNotification('Login successful! Redirecting...', 'success');
+        setTimeout(() => {
+            window.location.href = 'user/dashboard.html';
+        }, 1000);
+        return;
+    }
+    
+    // If not found in localStorage, try PHP (if connected)
+    try {
+        const formData = new URLSearchParams();
+        formData.append('login_input', loginInput);
+        formData.append('password', password);
+        
+        const response = await fetch('php/auth/login-process.php', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+            body: formData
+        });
+        
+        const result = await response.json();
+        
+        if(result.success) {
+            localStorage.setItem('isLoggedIn', 'true');
+            localStorage.setItem('username', result.username || loginInput);
+            localStorage.setItem('userEmail', loginInput);
+            
+            showNotification('Login successful! Redirecting...', 'success');
+            setTimeout(() => {
+                window.location.href = result.redirect || 'user/dashboard.html';
+            }, 1000);
+        } else {
+            showNotification(result.message || 'Invalid credentials', 'error');
+        }
+    } catch(error) {
+        showNotification('Invalid email/username or password', 'error');
+    }
+});
+
+        
+        // Add animation style
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes slideIn {
+                from {
+                    transform: translateX(100%);
+                    opacity: 0;
+                }
+                to {
+                    transform: translateX(0);
+                    opacity: 1;
+                }
+            }
+        `;
+        document.head.appendChild(style);
+    </script>
+    <script src="js/common.js"></script>
+</body>
+</html>

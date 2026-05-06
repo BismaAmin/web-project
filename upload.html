@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Upload Dish - Sizzle &amp; Share</title>
+    <link rel="stylesheet" href="css/main.css">
+</head>
+<body>
+
+<script>
+async function checkAuth() {
+    try {
+        const res = await fetch('php/check-session.php');
+        const data = await res.json();
+        if (!data.logged_in) {
+            alert('Please login to upload your dishes!');
+            window.location.href = 'login.html';
+        }
+    } catch(e) {
+        window.location.href = 'login.html';
+    }
+}
+checkAuth();
+</script>
+
+<!-- Navbar -->
+<nav class="navbar">
+        <div class="navbar-container">
+            <a href="index.html" class="navbar-logo">
+                <span class="logo-icon">🍳</span>
+                <span class="logo-text">Sizzle &amp; Share</span>
+            </a>
+            <button class="menu-btn" id="menuBtn" aria-label="Toggle menu" aria-expanded="false">
+                <span></span><span></span><span></span>
+            </button>
+            <ul class="nav-menu" id="navMenu">
+                <!-- Public links always visible -->
+                <li class="nav-item"><a href="index.html" class="nav-link">Home</a></li>
+                <li class="nav-item"><a href="gallery.html" class="nav-link">Gallery</a></li>
+                <li class="nav-item"><a href="leaderboard.html" class="nav-link">Leaderboard</a></li>
+                <li class="nav-item"><a href="about.html" class="nav-link">About</a></li>
+                <!-- Guest only: shown when NOT logged in -->
+                <li class="nav-item guest-only"><a href="login.html" class="btn btn-primary btn-sm">Login</a></li>
+                <li class="nav-item guest-only"><a href="signup.html" class="btn btn-outline btn-sm">Sign Up</a></li>
+                <!-- User dropdown: shown ONLY when logged in -->
+                <li class="nav-item user-only user-dropdown" id="userDropdown">
+                    <button class="user-dropdown-toggle" aria-haspopup="true" aria-expanded="false">
+                        <span class="user-avatar-badge">U</span>
+                        <span id="dropdownUsername">Account</span>
+                        <span class="dropdown-arrow">▼</span>
+                    </button>
+                    <div class="user-dropdown-menu" role="menu">
+                        <div class="dropdown-header">
+                            <div class="dropdown-header-name">Username</div>
+                            <div class="dropdown-header-email"></div>
+                        </div>
+                        <a href="user/dashboard.html" class="dropdown-item" role="menuitem"><span class="item-icon">📊</span> Dashboard</a>
+                        <a href="user/profile.html" class="dropdown-item" role="menuitem"><span class="item-icon">👤</span> My Profile</a>
+                        <a href="upload.html" class="dropdown-item" role="menuitem"><span class="item-icon">📸</span> Upload Photo</a>
+                        <a href="ingredients.html" class="dropdown-item" role="menuitem"><span class="item-icon">🥦</span> Ingredients</a>
+                        <a href="recipes.html" class="dropdown-item" role="menuitem"><span class="item-icon">📖</span> Recipes</a>
+                        <a href="challenge.html" class="dropdown-item" role="menuitem"><span class="item-icon">🏆</span> Challenge</a>
+                        <div class="dropdown-divider"></div>
+                        <button class="dropdown-item logout-item" onclick="logout()" role="menuitem"><span class="item-icon">🚪</span> Logout</button>
+                    </div>
+                </li>
+                <li class="nav-item"><button class="theme-toggle" id="darkModeToggle" onclick="toggleDarkMode()">🌙</button></li>
+            </ul>
+        </div>
+    </nav>
+
+
+<div style="padding:2.5rem 1.5rem 4rem;max-width:680px;margin:0 auto;">
+    <div style="text-align:center;margin-bottom:2rem;">
+        <h1 style="font-size:2rem;font-weight:800;color:var(--color-text);">Share Your Creation 📸</h1>
+        <p style="color:var(--color-text-light);">Upload your dish and inspire the community</p>
+    </div>
+
+    <div class="upload-card">
+        <form id="uploadForm" enctype="multipart/form-data">
+            <div class="form-group">
+                <label>Dish Name <span style="color:var(--color-danger);">*</span></label>
+                <input type="text" name="dish_name" required placeholder="e.g., My Special Pasta">
+            </div>
+
+            <div class="form-group">
+                <label>Recipe Used <span style="color:var(--color-text-lighter);font-weight:400;">(Optional)</span></label>
+                <select name="recipe_id">
+                    <option value="">Select a recipe (optional)</option>
+                    <option value="1">Spaghetti Carbonara</option>
+                    <option value="2">Margherita Pizza</option>
+                    <option value="3">Greek Salad</option>
+                    <option value="4">Chicken Stir Fry</option>
+                    <option value="5">Classic Omelette</option>
+                    <option value="6">Garlic Butter Rice</option>
+                    <option value="7">Chocolate Cake</option>
+                    <option value="8">Chicken Curry</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label>Description / Caption</label>
+                <textarea name="description" rows="3" placeholder="Tell us about your dish..."></textarea>
+            </div>
+
+            <div class="form-group">
+                <label>Upload Photo <span style="color:var(--color-danger);">*</span></label>
+                <div class="upload-area" id="dropZone">
+                    <div class="upload-icon">📸</div>
+                    <h3>Drag &amp; drop your photo here</h3>
+                    <p>or click to browse — JPG, PNG, GIF up to 10MB</p>
+                    <input type="file" id="fileInput" name="dish_image" accept="image/*" style="display:none;" required>
+                </div>
+                <div id="previewWrap" style="display:none;margin-top:1rem;position:relative;text-align:center;">
+                    <img id="preview" style="max-width:100%;max-height:280px;border-radius:var(--radius-lg);object-fit:cover;">
+                    <button type="button" id="removePreview" style="position:absolute;top:-10px;right:-10px;background:var(--color-danger);color:white;border:none;border-radius:50%;width:30px;height:30px;cursor:pointer;font-size:1rem;">✕</button>
+                </div>
+            </div>
+
+            <button type="submit" class="btn btn-primary btn-block" style="font-size:1.05rem;padding:0.85rem;">Share Dish 🎉</button>
+        </form>
+
+        <div id="message" style="display:none;margin-top:1rem;padding:0.75rem 1rem;border-radius:var(--radius-md);text-align:center;font-weight:500;"></div>
+    </div>
+</div>
+
+<footer class="footer">
+    <div class="footer-container">
+        <div class="footer-section">
+            <h3>🍳 Sizzle &amp; Share</h3>
+            <p>Cook, Capture, Challenge - Share Your Culinary Magic!</p>
+        </div>
+        <div class="footer-section">
+            <h4>Quick Links</h4>
+            <ul class="footer-links">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="gallery.html">Gallery</a></li>
+                <li><a href="recipes.html">Recipes</a></li>
+            </ul>
+        </div>
+    </div>
+    <div class="footer-bottom"><p>&copy; 2025 Sizzle &amp; Share. All rights reserved.</p></div>
+</footer>
+<button class="scroll-top" id="scrollTop">↑</button>
+
+<script>
+const dropZone = document.getElementById('dropZone');
+const fileInput = document.getElementById('fileInput');
+const preview = document.getElementById('preview');
+const previewWrap = document.getElementById('previewWrap');
+const removePreview = document.getElementById('removePreview');
+let selectedFile = null;
+
+dropZone.addEventListener('click', () => fileInput.click());
+dropZone.addEventListener('dragover', e => { e.preventDefault(); dropZone.classList.add('drag-over'); });
+dropZone.addEventListener('dragleave', () => dropZone.classList.remove('drag-over'));
+dropZone.addEventListener('drop', e => {
+    e.preventDefault(); dropZone.classList.remove('drag-over');
+    const f = e.dataTransfer.files[0];
+    if (f && f.type.startsWith('image/')) handleFile(f);
+});
+fileInput.addEventListener('change', e => { if (e.target.files[0]) handleFile(e.target.files[0]); });
+
+function handleFile(file) {
+    selectedFile = file;
+    const reader = new FileReader();
+    reader.onload = e => {
+        preview.src = e.target.result;
+        previewWrap.style.display = 'block';
+    };
+    reader.readAsDataURL(file);
+}
+
+removePreview.addEventListener('click', () => {
+    previewWrap.style.display = 'none';
+    selectedFile = null;
+    fileInput.value = '';
+});
+
+document.getElementById('uploadForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const dishName = document.querySelector('input[name="dish_name"]').value;
+    if (!dishName) { showMsg('Please enter a dish name', 'error'); return; }
+    if (!selectedFile) { showMsg('Please select a photo!', 'error'); return; }
+
+    const fd = new FormData();
+    fd.append('dish_name', dishName);
+    fd.append('description', document.querySelector('textarea[name="description"]').value);
+    fd.append('recipe_id', document.querySelector('select[name="recipe_id"]').value);
+    fd.append('dish_image', selectedFile);
+    showMsg('Uploading...', 'info');
+
+    try {
+        const res = await fetch('php/upload-process.php', { method: 'POST', body: fd });
+        const raw = await res.text();
+        let result;
+        try { result = JSON.parse(raw); } catch(err) { showMsg('Server error: ' + raw.substring(0,100), 'error'); return; }
+        if (result.success) {
+            showMsg('✅ ' + result.message, 'success');
+            document.getElementById('uploadForm').reset();
+            previewWrap.style.display = 'none';
+            selectedFile = null;
+            setTimeout(() => window.location.href = 'gallery.html', 2000);
+        } else {
+            showMsg('❌ ' + result.message, 'error');
+        }
+    } catch(err) {
+        showMsg('Network error: ' + err.message, 'error');
+    }
+});
+
+function showMsg(msg, type) {
+    const el = document.getElementById('message');
+    el.textContent = msg; el.style.display = 'block';
+    if (type === 'success') { el.style.background='#d4f5ec';el.style.color='#0a6c50'; }
+    else if (type === 'error') { el.style.background='#fde8ec';el.style.color='#8b1a2e'; }
+    else { el.style.background='#dbeafe';el.style.color='#1e40af'; }
+}
+</script>
+<script src="js/common.js"></script>
+</body>
+</html>
