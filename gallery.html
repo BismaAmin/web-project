@@ -26,13 +26,12 @@
             background: white;
             border-radius: var(--radius-lg);
             overflow: hidden;
-            cursor: pointer;
             transition: all 0.3s ease;
             box-shadow: var(--shadow-md);
         }
         
         .gallery-item:hover {
-            transform: translateY(-5px);
+            transform: translateY(-4px);
             box-shadow: var(--shadow-xl);
         }
         
@@ -43,6 +42,7 @@
             justify-content: center;
             font-size: 5rem;
             background: linear-gradient(135deg, var(--color-secondary), #4895EF);
+            cursor: pointer;
         }
         
         .gallery-image img {
@@ -54,46 +54,122 @@
         .gallery-info {
             padding: 1rem;
         }
+
+        .gallery-actions {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 0.5rem;
+            flex-wrap: wrap;
+            gap: 0.4rem;
+        }
         
         .like-btn {
             background: none;
             border: none;
-            font-size: 1.2rem;
+            font-size: 1.1rem;
             cursor: pointer;
             transition: transform 0.2s;
             display: flex;
             align-items: center;
-            gap: 0.5rem;
-            padding: 0.5rem 1rem;
+            gap: 0.4rem;
+            padding: 0.4rem 0.8rem;
             border-radius: var(--radius-full);
+            color: var(--color-text);
         }
-        
-        .like-btn:hover {
-            transform: scale(1.1);
-            background: rgba(0,0,0,0.05);
-        }
-        
-        .like-btn.liked {
-            color: var(--color-danger);
-        }
-        
-        .load-more {
-            text-align: center;
-            margin: 2rem auto;
-        }
-        
-        .loading {
-            text-align: center;
-            padding: 2rem;
-            font-size: 1.2rem;
-        }
-        
-        .empty-gallery {
-            text-align: center;
-            padding: 3rem;
-            font-size: 1.2rem;
+        .like-btn:hover { transform: scale(1.1); background: rgba(0,0,0,0.05); }
+        .like-btn.liked { color: var(--color-danger); }
+
+        .comment-toggle-btn {
+            background: none;
+            border: 1px solid var(--color-border);
+            font-size: 0.88rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.3rem;
+            padding: 0.4rem 0.8rem;
+            border-radius: var(--radius-full);
             color: var(--color-text-light);
+            transition: background 0.2s, color 0.2s;
         }
+        .comment-toggle-btn:hover { background: var(--color-background-alt); color: var(--color-primary); border-color: var(--color-primary); }
+
+        /* Comments panel */
+        .comments-panel {
+            display: none;
+            border-top: 1px solid var(--color-border);
+            padding: 0.75rem 1rem 1rem;
+            background: var(--color-background-alt, #fafafa);
+        }
+        .comments-panel.open { display: block; }
+
+        .comments-list {
+            max-height: 220px;
+            overflow-y: auto;
+            margin-bottom: 0.75rem;
+        }
+        .comment-item {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 0.6rem;
+            align-items: flex-start;
+        }
+        .comment-avatar {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            object-fit: cover;
+            flex-shrink: 0;
+            background: var(--color-primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 0.75rem;
+            font-weight: 700;
+            overflow: hidden;
+        }
+        .comment-avatar img { width: 100%; height: 100%; object-fit: cover; }
+        .comment-body { flex: 1; }
+        .comment-username { font-weight: 700; font-size: 0.82rem; color: var(--color-text); margin-right: 0.4rem; }
+        .comment-text { font-size: 0.85rem; color: var(--color-text-light); line-height: 1.45; }
+        .comment-time { font-size: 0.73rem; color: var(--color-text-lighter, #aaa); margin-top: 0.1rem; }
+
+        .no-comments { text-align: center; color: var(--color-text-lighter, #aaa); font-size: 0.85rem; padding: 0.5rem 0 0.75rem; }
+
+        .comment-form {
+            display: flex;
+            gap: 0.5rem;
+        }
+        .comment-input {
+            flex: 1;
+            padding: 0.45rem 0.8rem;
+            border: 1.5px solid var(--color-border);
+            border-radius: var(--radius-full);
+            font-size: 0.87rem;
+            font-family: inherit;
+            background: white;
+            color: var(--color-text);
+        }
+        .comment-input:focus { outline: none; border-color: var(--color-primary); }
+        .comment-submit {
+            padding: 0.45rem 1rem;
+            background: var(--color-primary);
+            color: white;
+            border: none;
+            border-radius: var(--radius-full);
+            font-size: 0.87rem;
+            cursor: pointer;
+            font-family: inherit;
+            font-weight: 600;
+            transition: opacity 0.2s;
+        }
+        .comment-submit:hover { opacity: 0.85; }
+        
+        .load-more { text-align: center; margin: 2rem auto; }
+        .loading { text-align: center; padding: 2rem; font-size: 1.2rem; }
+        .empty-gallery { text-align: center; padding: 3rem; font-size: 1.2rem; color: var(--color-text-light); }
         
         .filter-bar {
             max-width: 1200px;
@@ -103,7 +179,6 @@
             gap: 1rem;
             justify-content: flex-end;
         }
-        
         .sort-select {
             padding: 0.5rem 1rem;
             border: 2px solid var(--color-border);
@@ -113,13 +188,8 @@
         }
         
         @media (max-width: 768px) {
-            .gallery-grid {
-                grid-template-columns: 1fr;
-                padding: 0 1rem;
-            }
-            .filter-bar {
-                justify-content: center;
-            }
+            .gallery-grid { grid-template-columns: 1fr; padding: 0 1rem; }
+            .filter-bar { justify-content: center; }
         }
     </style>
 </head>
@@ -136,15 +206,12 @@
                 <span></span><span></span><span></span>
             </button>
             <ul class="nav-menu" id="navMenu">
-                <!-- Public links always visible -->
                 <li class="nav-item"><a href="index.html" class="nav-link">Home</a></li>
                 <li class="nav-item"><a href="gallery.html" class="nav-link active">Gallery</a></li>
                 <li class="nav-item"><a href="leaderboard.html" class="nav-link">Leaderboard</a></li>
                 <li class="nav-item"><a href="about.html" class="nav-link">About</a></li>
-                <!-- Guest only: shown when NOT logged in -->
                 <li class="nav-item guest-only"><a href="login.html" class="btn btn-primary btn-sm">Login</a></li>
                 <li class="nav-item guest-only"><a href="signup.html" class="btn btn-outline btn-sm">Sign Up</a></li>
-                <!-- User dropdown: shown ONLY when logged in -->
                 <li class="nav-item user-only user-dropdown" id="userDropdown">
                     <button class="user-dropdown-toggle" aria-haspopup="true" aria-expanded="false">
                         <span class="user-avatar-badge">U</span>
@@ -156,14 +223,14 @@
                             <div class="dropdown-header-name">Username</div>
                             <div class="dropdown-header-email"></div>
                         </div>
-                        <a href="user/dashboard.html" class="dropdown-item" role="menuitem"><span class="item-icon">📊</span> Dashboard</a>
-                        <a href="user/profile.html" class="dropdown-item" role="menuitem"><span class="item-icon">👤</span> My Profile</a>
-                        <a href="upload.html" class="dropdown-item" role="menuitem"><span class="item-icon">📸</span> Upload Photo</a>
-                        <a href="ingredients.html" class="dropdown-item" role="menuitem"><span class="item-icon">🥦</span> Ingredients</a>
-                        <a href="recipes.html" class="dropdown-item" role="menuitem"><span class="item-icon">📖</span> Recipes</a>
-                        <a href="challenge.html" class="dropdown-item" role="menuitem"><span class="item-icon">🏆</span> Challenge</a>
+                        <a href="user/dashboard.html" class="dropdown-item" role="menuitem">Dashboard</a>
+                        <a href="user/profile.html" class="dropdown-item" role="menuitem">My Profile</a>
+                        <a href="upload.html" class="dropdown-item" role="menuitem">Upload Photo</a>
+                        <a href="ingredients.html" class="dropdown-item" role="menuitem">Ingredients</a>
+                        <a href="recipes.html" class="dropdown-item" role="menuitem">Recipes</a>
+                        <a href="challenge.html" class="dropdown-item" role="menuitem">Challenge</a>
                         <div class="dropdown-divider"></div>
-                        <button class="dropdown-item logout-item" onclick="logout()" role="menuitem"><span class="item-icon">🚪</span> Logout</button>
+                        <button class="dropdown-item logout-item" onclick="logout()" role="menuitem">Logout</button>
                     </div>
                 </li>
                 <li class="nav-item"><button class="theme-toggle" id="darkModeToggle" onclick="toggleDarkMode()">🌙</button></li>
@@ -173,7 +240,7 @@
 
     <!-- Hero Section -->
     <div class="gallery-hero">
-        <h1>📸 Community Gallery</h1>
+        <h1>Community Gallery</h1>
         <p>See what others are cooking and get inspired!</p>
     </div>
 
@@ -192,20 +259,20 @@
     </div>
 
     <div class="load-more">
-        <button class="btn btn-outline" id="loadMoreBtn" style="display: none;">Load More 🍽️</button>
+        <button class="btn btn-outline" id="loadMoreBtn" style="display: none;">Load More</button>
     </div>
 
     <!-- Footer -->
     <footer class="footer">
         <div class="footer-container">
             <div class="footer-section">
-                <h3>🍳 Sizzle & Share</h3>
+                <h3>Sizzle &amp; Share</h3>
                 <p>Cook, Capture, Challenge - Share Your Culinary Magic!</p>
                 <div class="social-links">
-                    <a href="#" class="social-link">📷</a>
-                    <a href="#" class="social-link">📘</a>
-                    <a href="#" class="social-link">🐦</a>
-                    <a href="#" class="social-link">📌</a>
+                    <a href="#" class="social-link">Instagram</a>
+                    <a href="#" class="social-link">Facebook</a>
+                    <a href="#" class="social-link">Twitter</a>
+                    <a href="#" class="social-link">Pinterest</a>
                 </div>
             </div>
             <div class="footer-section">
@@ -230,7 +297,6 @@
         </div>
     </footer>
 
-    <!-- Scroll to Top Button -->
     <button class="scroll-top" id="scrollTop">↑</button>
 
     <script src="js/common.js"></script>
@@ -253,19 +319,17 @@
                     loadLikedItems();
                     sortAndRenderGallery();
                 } else {
-                    grid.innerHTML = '<div class="empty-gallery">📭 No dishes uploaded yet. Be the first to <a href="upload.html">share your dish</a>!</div>';
+                    grid.innerHTML = '<div class="empty-gallery">No dishes uploaded yet. Be the first to <a href="upload.html">share your dish</a>!</div>';
                 }
             } catch (error) {
                 console.error('Error loading gallery:', error);
-                grid.innerHTML = '<div class="empty-gallery">❌ Error loading gallery. Please try again later.</div>';
+                grid.innerHTML = '<div class="empty-gallery">Error loading gallery. Please try again later.</div>';
             }
         }
         
         function loadLikedItems() {
             const saved = localStorage.getItem('galleryLikedItems');
-            if (saved) {
-                likedItems = JSON.parse(saved);
-            }
+            if (saved) likedItems = JSON.parse(saved);
         }
         
         function saveLikedItems() {
@@ -274,21 +338,15 @@
         
         function sortAndRenderGallery() {
             let sorted = [...galleryItems];
-            
-            if (currentSort === 'latest') {
-                sorted.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
-            } else if (currentSort === 'oldest') {
-                sorted.sort((a, b) => new Date(a.created_at) - new Date(b.created_at));
-            } else if (currentSort === 'mostLiked') {
-                sorted.sort((a, b) => b.likes - a.likes);
-            }
-            
+            if (currentSort === 'latest')   sorted.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+            if (currentSort === 'oldest')   sorted.sort((a, b) => new Date(a.created_at) - new Date(b.created_at));
+            if (currentSort === 'mostLiked') sorted.sort((a, b) => b.likes - a.likes);
             renderGallery(sorted);
         }
         
         async function toggleLike(id, buttonElement) {
             const isLiked = likedItems.includes(id);
-            const action = isLiked ? 'unlike' : 'like';
+            const action  = isLiked ? 'unlike' : 'like';
             
             try {
                 const formData = new URLSearchParams();
@@ -300,30 +358,23 @@
                     headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
                     body: formData
                 });
-                
                 const result = await response.json();
                 
                 if (result.success) {
                     if (action === 'like') {
                         likedItems.push(id);
-                        showNotification('Liked! ❤️', 'success');
+                        showNotification('Liked!', 'success');
+                        buttonElement.classList.add('liked');
                     } else {
                         likedItems = likedItems.filter(i => i !== id);
                         showNotification('Like removed', 'info');
-                    }
-                    saveLikedItems();
-                    
-                    const likeSpan = buttonElement.querySelector('.like-count');
-                    if (likeSpan) likeSpan.textContent = result.likes;
-                    
-                    const item = galleryItems.find(i => i.id === id);
-                    if (item) item.likes = result.likes;
-                    
-                    if (action === 'like') {
-                        buttonElement.classList.add('liked');
-                    } else {
                         buttonElement.classList.remove('liked');
                     }
+                    saveLikedItems();
+                    const likeSpan = buttonElement.querySelector('.like-count');
+                    if (likeSpan) likeSpan.textContent = result.likes;
+                    const item = galleryItems.find(i => i.id === id);
+                    if (item) item.likes = result.likes;
                 }
             } catch (error) {
                 showNotification('Please login to like', 'error');
@@ -331,37 +382,192 @@
         }
         
         function shareDish(dish) {
-            navigator.clipboard.writeText(`Check out "${dish}" on Sizzle & Share! 🍳`);
+            navigator.clipboard.writeText(`Check out "${dish}" on Sizzle & Share! 🍳`).catch(() => {});
             showNotification('Share link copied!', 'success');
         }
+
+        /* ── Comments ── */
+        const commentsCache = {};
+
+        async function toggleComments(uploadId) {
+            const panel = document.getElementById('comments-panel-' + uploadId);
+            if (!panel) return;
+            if (panel.classList.contains('open')) {
+                panel.classList.remove('open');
+                return;
+            }
+            panel.classList.add('open');
+            if (!commentsCache[uploadId]) {
+                await fetchComments(uploadId);
+            }
+        }
+
+        async function fetchComments(uploadId) {
+            const list = document.getElementById('comments-list-' + uploadId);
+            if (!list) return;
+            list.innerHTML = '<div class="no-comments">Loading…</div>';
+            try {
+                const r = await fetch('php/comments/get-comments.php?upload_id=' + uploadId);
+                const d = await r.json();
+                commentsCache[uploadId] = d.data || [];
+                renderComments(uploadId);
+                const btn = document.querySelector('[data-comment-btn="' + uploadId + '"]');
+                if (btn) {
+                    const cnt = btn.querySelector('.comment-count');
+                    if (cnt) cnt.textContent = commentsCache[uploadId].length;
+                }
+            } catch(_) {
+                if (list) list.innerHTML = '<div class="no-comments">Could not load comments.</div>';
+            }
+        }
+
+        function renderComments(uploadId) {
+            const list = document.getElementById('comments-list-' + uploadId);
+            if (!list) return;
+            const comments = commentsCache[uploadId] || [];
+            if (comments.length === 0) {
+                list.innerHTML = '<div class="no-comments">No comments yet — be the first!</div>';
+                return;
+            }
+            list.innerHTML = comments.map(c => {
+                const seed = encodeURIComponent(c.username || 'user');
+                const picSrc = c.profile_picture
+                    ? 'uploads/profile-pictures/' + c.profile_picture
+                    : 'https://api.dicebear.com/7.x/adventurer/svg?seed=' + seed;
+                const initial = (c.username || 'U')[0].toUpperCase();
+                const timeAgo = formatTimeAgo(c.created_at);
+                return `
+                <div class="comment-item">
+                    <div class="comment-avatar">
+                        <img src="${picSrc}" alt="${escapeHtml(c.username)}"
+                             onerror="this.style.display='none';this.parentElement.textContent='${initial}'">
+                    </div>
+                    <div class="comment-body">
+                        <span class="comment-username">${escapeHtml(c.username)}</span>
+                        <span class="comment-text">${escapeHtml(c.comment_text)}</span>
+                        <div class="comment-time">${timeAgo}</div>
+                    </div>
+                </div>`;
+            }).join('');
+        }
+
+        async function submitComment(uploadId) {
+            const input = document.getElementById('comment-input-' + uploadId);
+            if (!input) return;
+            const text = input.value.trim();
+            if (!text) return;
+
+            const fd = new URLSearchParams();
+            fd.append('upload_id', uploadId);
+            fd.append('comment_text', text);
+
+            try {
+                const r = await fetch('php/comments/add-comment.php', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                    body: fd
+                });
+                const d = await r.json();
+                if (d.success) {
+                    input.value = '';
+                    if (!commentsCache[uploadId]) commentsCache[uploadId] = [];
+                    commentsCache[uploadId].push({
+                        comment_id:   d.comment_id,
+                        username:     d.username,
+                        comment_text: d.text,
+                        created_at:   d.created_at,
+                        profile_picture: null
+                    });
+                    renderComments(uploadId);
+                    const btn = document.querySelector('[data-comment-btn="' + uploadId + '"]');
+                    if (btn) {
+                        const cnt = btn.querySelector('.comment-count');
+                        if (cnt) cnt.textContent = commentsCache[uploadId].length;
+                    }
+                } else {
+                    showNotification(d.message || 'Please login to comment', 'error');
+                }
+            } catch(_) {
+                showNotification('Could not post comment', 'error');
+            }
+        }
+
+        function formatTimeAgo(dateStr) {
+            const diff = Date.now() - new Date(dateStr).getTime();
+            const min  = Math.floor(diff / 60000);
+            if (min < 1)  return 'just now';
+            if (min < 60) return min + 'm ago';
+            const hr = Math.floor(min / 60);
+            if (hr < 24)  return hr + 'h ago';
+            return Math.floor(hr / 24) + 'd ago';
+        }
+        /* ────────────── */
         
         function renderGallery(itemsToShow) {
             const grid = document.getElementById('galleryGrid');
             const items = itemsToShow.slice(0, visibleItems);
             
             if (items.length === 0) {
-                grid.innerHTML = '<div class="empty-gallery">📭 No dishes uploaded yet.</div>';
+                grid.innerHTML = '<div class="empty-gallery">No dishes uploaded yet.</div>';
                 return;
             }
             
             grid.innerHTML = items.map(item => `
                 <div class="gallery-item">
-                    <div class="gallery-image">
-                        ${item.image_path ? `<img src="${item.image_path}" alt="${item.dish}">` : item.image}
+                    <div class="gallery-image" onclick="shareDish('${escapeHtml(item.dish)}')">
+                        ${item.image_path
+                            ? `<img src="${item.image_path}" alt="${escapeHtml(item.dish)}" 
+                                   onerror="this.style.display='none';this.parentElement.innerHTML='<span style=font-size:4rem;>${item.image || '🍲'}</span>';" 
+                                   style="width:100%;height:100%;object-fit:cover;">`
+                            : `<span style="font-size:4rem;">${item.image || '🍲'}</span>`}
                     </div>
                     <div class="gallery-info">
                         <h3>${escapeHtml(item.dish)}</h3>
-                        <p>${escapeHtml(item.caption)}</p>
-                        <small>by @${item.username} • ${item.time}</small>
-                        <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 0.5rem;">
-                            <button class="like-btn ${likedItems.includes(item.id) ? 'liked' : ''}" onclick="toggleLike(${item.id}, this)">
+                        <p style="color:var(--color-text-light);font-size:0.9rem;margin:0.2rem 0 0.3rem;">${escapeHtml(item.caption)}</p>
+                        <small style="color:var(--color-text-lighter);">by @${escapeHtml(item.username)} &bull; ${item.time}</small>
+                        <div class="gallery-actions">
+                            <button class="like-btn ${likedItems.includes(item.id) ? 'liked' : ''}"
+                                    onclick="toggleLike(${item.id}, this)">
                                 ❤️ <span class="like-count">${item.likes}</span>
                             </button>
-                            <button class="btn btn-outline btn-sm" onclick="shareDish('${escapeHtml(item.dish)}')">📤 Share</button>
+                            <button class="comment-toggle-btn" data-comment-btn="${item.id}"
+                                    onclick="toggleComments(${item.id})">
+                                <span class="comment-count">0</span> Comments
+                            </button>
+                            <button class="btn btn-outline btn-sm"
+                                    onclick="shareDish('${escapeHtml(item.dish)}')">Share</button>
+                        </div>
+                    </div>
+                    <!-- Comments Panel -->
+                    <div class="comments-panel" id="comments-panel-${item.id}">
+                        <div class="comments-list" id="comments-list-${item.id}">
+                            <div class="no-comments">No comments yet — be the first!</div>
+                        </div>
+                        <div class="comment-form">
+                            <input class="comment-input" id="comment-input-${item.id}"
+                                   type="text" placeholder="Write a comment…" maxlength="500"
+                                   onkeydown="if(event.key==='Enter'){submitComment(${item.id});}">
+                            <button class="comment-submit" onclick="submitComment(${item.id})">Post</button>
                         </div>
                     </div>
                 </div>
             `).join('');
+
+            // Pre-load comment counts after render
+            items.forEach(item => {
+                fetch('php/comments/get-comments.php?upload_id=' + item.id)
+                    .then(r => r.json())
+                    .then(d => {
+                        if (d.success) {
+                            commentsCache[item.id] = d.data || [];
+                            const btn = document.querySelector('[data-comment-btn="' + item.id + '"]');
+                            if (btn) {
+                                const cnt = btn.querySelector('.comment-count');
+                                if (cnt) cnt.textContent = commentsCache[item.id].length;
+                            }
+                        }
+                    }).catch(() => {});
+            });
             
             const loadMoreBtn = document.getElementById('loadMoreBtn');
             if (visibleItems >= itemsToShow.length) {
@@ -391,11 +597,8 @@
         
         loadGallery();
     
-        // Cross-tab logout: if another tab logs out, update this page too
         window.addEventListener('storage', function(e) {
-            if (e.key === 'isLoggedIn' && e.newValue !== 'true') {
-                updateNavbar();
-            }
+            if (e.key === 'isLoggedIn' && e.newValue !== 'true') updateNavbar();
             if (e.key === 'logoutEvent') {
                 localStorage.removeItem('isLoggedIn');
                 localStorage.removeItem('username');
@@ -403,6 +606,6 @@
                 updateNavbar();
             }
         });
-</script>
+    </script>
 </body>
 </html>
