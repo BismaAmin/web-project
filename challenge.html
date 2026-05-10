@@ -245,7 +245,7 @@
 <nav class="navbar">
         <div class="navbar-container">
             <a href="index.html" class="navbar-logo">
-                <span class="logo-icon">🍳</span>
+                <svg class="logo-icon" width="26" height="26" viewBox="0 0 24 24" fill="var(--color-primary,#FF6B35)" aria-hidden="true"><path d="M12 23a7.5 7.5 0 0 0 7.5-7.5c0-4.142-7.5-13.5-7.5-13.5S4.5 11.358 4.5 15.5A7.5 7.5 0 0 0 12 23z"/></svg>
                 <span class="logo-text">Sizzle &amp; Share</span>
             </a>
             <button class="menu-btn" id="menuBtn" aria-label="Toggle menu" aria-expanded="false">
@@ -272,17 +272,17 @@
                             <div class="dropdown-header-name">Username</div>
                             <div class="dropdown-header-email"></div>
                         </div>
-                        <a href="user/dashboard.html" class="dropdown-item" role="menuitem"><span class="item-icon">📊</span> Dashboard</a>
-                        <a href="user/profile.html" class="dropdown-item" role="menuitem"><span class="item-icon">👤</span> My Profile</a>
-                        <a href="upload.html" class="dropdown-item" role="menuitem"><span class="item-icon">📸</span> Upload Photo</a>
-                        <a href="ingredients.html" class="dropdown-item" role="menuitem"><span class="item-icon">🥦</span> Ingredients</a>
-                        <a href="recipes.html" class="dropdown-item" role="menuitem"><span class="item-icon">📖</span> Recipes</a>
-                        <a href="challenge.html" class="dropdown-item" role="menuitem"><span class="item-icon">🏆</span> Challenge</a>
+                        <a href="user/dashboard.html" class="dropdown-item" role="menuitem">Dashboard</a>
+                        <a href="user/profile.html" class="dropdown-item" role="menuitem">My Profile</a>
+                        <a href="upload.html" class="dropdown-item" role="menuitem">Upload Photo</a>
+                        <a href="ingredients.html" class="dropdown-item" role="menuitem">Ingredients</a>
+                        <a href="recipes.html" class="dropdown-item" role="menuitem">Recipes</a>
+                        <a href="challenge.html" class="dropdown-item" role="menuitem">Challenge</a>
                         <div class="dropdown-divider"></div>
-                        <button class="dropdown-item logout-item" onclick="logout()" role="menuitem"><span class="item-icon">🚪</span> Logout</button>
+                        <button class="dropdown-item logout-item" onclick="logout()" role="menuitem">Logout</button>
                     </div>
                 </li>
-                <li class="nav-item"><button class="theme-toggle" id="darkModeToggle" onclick="toggleDarkMode()">🌙</button></li>
+                <li class="nav-item"><button class="theme-toggle" id="darkModeToggle" onclick="toggleDarkMode()">&#9790;</button></li>
             </ul>
         </div>
     </nav>
@@ -291,23 +291,23 @@
     <div id="pageContent" style="display: none;">
         <!-- Hero Section -->
         <div class="challenge-hero">
-            <h1>🏆 Weekly Cooking Challenge</h1>
+            <h1>Weekly Cooking Challenge</h1>
             <p>Compete with food lovers around the world!</p>
         </div>
 
         <!-- Challenge Container -->
         <div class="challenge-container">
             <div class="active-challenge">
-                <h2>🍝 Week 5: Pasta Paradise</h2>
+                <h2>Week 5: Pasta Paradise</h2>
                 <p>Create the most delicious pasta dish! Get creative with sauces, toppings, and presentation.</p>
                 <div class="countdown" id="countdown">Loading...</div>
-                <div>👥 <span id="participantCount">234</span> participants</div>
-                <div>🏆 Prize: Premium Cooking Kit + Featured Chef Badge</div>
-                <button class="btn btn-light" id="joinChallengeBtn" style="margin-top: 1rem; color: var(--color-primary);">🎯 Join Challenge Now</button>
+                <div><span id="participantCount">234</span> participants</div>
+                <div>Prize: Premium Cooking Kit + Featured Chef Badge</div>
+                <button class="btn btn-light" id="joinChallengeBtn" style="margin-top: 1rem; color: var(--color-primary);">Join Challenge Now</button>
             </div>
             
             <div class="submission-form" id="submissionForm" style="display: none;">
-                <h3>📤 Submit Your Dish</h3>
+                <h3>Submit Your Dish</h3>
                 <form id="challengeSubmitForm">
                     <div class="form-group">
                         <label>Dish Name</label>
@@ -322,30 +322,30 @@
                         <input type="file" accept="image/*" id="challengeImage">
                         <small>Upload your masterpiece!</small>
                     </div>
-                    <button type="submit" class="btn btn-primary btn-block" style="width: 100%;">Submit Entry 🎉</button>
+                    <button type="submit" class="btn btn-primary btn-block" style="width: 100%;">Submit Entry</button>
                 </form>
             </div>
             
             <div class="past-challenges">
-                <h3>📅 Past Challenges</h3>
+                <h3>Past Challenges</h3>
                 <div class="past-challenge-item" data-challenge-id="4" data-challenge-name="Vegan Delight">
-                    <span>🥗 Week 4: Vegan Delight</span>
-                    <span><span class="winner-badge">🏆 Winner: @sarah_j</span></span>
+                    <span>Week 4: Vegan Delight</span>
+                    <span><span class="winner-badge">Winner: @sarah_j</span></span>
                     <button class="btn btn-outline btn-sm view-results-btn">View Results</button>
                 </div>
                 <div class="past-challenge-item" data-challenge-id="3" data-challenge-name="15-Min Meals">
-                    <span>⚡ Week 3: 15-Min Meals</span>
-                    <span><span class="winner-badge">🏆 Winner: @ahmed_k</span></span>
+                    <span>Week 3: 15-Min Meals</span>
+                    <span><span class="winner-badge">Winner: @ahmed_k</span></span>
                     <button class="btn btn-outline btn-sm view-results-btn">View Results</button>
                 </div>
                 <div class="past-challenge-item" data-challenge-id="2" data-challenge-name="Baking Masters">
-                    <span>🍰 Week 2: Baking Masters</span>
-                    <span><span class="winner-badge">🏆 Winner: @priya_s</span></span>
+                    <span>Week 2: Baking Masters</span>
+                    <span><span class="winner-badge">Winner: @priya_s</span></span>
                     <button class="btn btn-outline btn-sm view-results-btn">View Results</button>
                 </div>
                 <div class="past-challenge-item" data-challenge-id="1" data-challenge-name="Asian Fusion">
-                    <span>🍜 Week 1: Asian Fusion</span>
-                    <span><span class="winner-badge">🏆 Winner: @ming_l</span></span>
+                    <span>Week 1: Asian Fusion</span>
+                    <span><span class="winner-badge">Winner: @ming_l</span></span>
                     <button class="btn btn-outline btn-sm view-results-btn">View Results</button>
                 </div>
             </div>
@@ -369,13 +369,13 @@
     <footer class="footer" id="footer" style="display: none;">
         <div class="footer-container">
             <div class="footer-section">
-                <h3>🍳 Sizzle & Share</h3>
+                <h3>Sizzle &amp; Share</h3>
                 <p>Cook, Capture, Challenge - Share Your Culinary Magic!</p>
                 <div class="social-links">
-                    <a href="#" class="social-link">📷</a>
-                    <a href="#" class="social-link">📘</a>
-                    <a href="#" class="social-link">🐦</a>
-                    <a href="#" class="social-link">📌</a>
+                    <a href="#" class="social-link">Instagram</a>
+                    <a href="#" class="social-link">Facebook</a>
+                    <a href="#" class="social-link">Twitter</a>
+                    <a href="#" class="social-link">Pinterest</a>
                 </div>
             </div>
             <div class="footer-section">
@@ -437,61 +437,61 @@
             const pastChallengesData = {
                 1: {
                     id: 1, name: "Asian Fusion", week: 1,
-                    winner: { username: "ming_l", full_name: "Ming Lee", avatar: "🥢", dish_name: "Sushi Burrito", dish_description: "A fusion of Japanese sushi and Mexican burrito.", votes: 342, image: "🍱" },
+                    winner: { username: "ming_l", full_name: "Ming Lee", avatar: "", dish_name: "Sushi Burrito", dish_description: "A fusion of Japanese sushi and Mexican burrito.", votes: 342, image: "" },
                     top_participants: [
-                        { rank: 1, username: "ming_l", full_name: "Ming Lee", dish_name: "Sushi Burrito", votes: 342, avatar: "🥢" },
-                        { rank: 2, username: "sarah_j", full_name: "Sarah Johnson", dish_name: "Kimchi Ramen", votes: 298, avatar: "🍜" },
-                        { rank: 3, username: "ahmed_k", full_name: "Ahmed Khan", dish_name: "Thai Green Curry", votes: 256, avatar: "🍛" }
+                        { rank: 1, username: "ming_l", full_name: "Ming Lee", dish_name: "Sushi Burrito", votes: 342, avatar: "" },
+                        { rank: 2, username: "sarah_j", full_name: "Sarah Johnson", dish_name: "Kimchi Ramen", votes: 298, avatar: "" },
+                        { rank: 3, username: "ahmed_k", full_name: "Ahmed Khan", dish_name: "Thai Green Curry", votes: 256, avatar: "" }
                     ],
                     all_submissions: [
-                        { username: "ming_l", dish_name: "Sushi Burrito", votes: 342, avatar: "🥢" },
-                        { username: "sarah_j", dish_name: "Kimchi Ramen", votes: 298, avatar: "🍜" },
-                        { username: "ahmed_k", dish_name: "Thai Green Curry", votes: 256, avatar: "🍛" }
+                        { username: "ming_l", dish_name: "Sushi Burrito", votes: 342, avatar: "" },
+                        { username: "sarah_j", dish_name: "Kimchi Ramen", votes: 298, avatar: "" },
+                        { username: "ahmed_k", dish_name: "Thai Green Curry", votes: 256, avatar: "" }
                     ],
                     total_participants: 156, date: "January 2024"
                 },
                 2: {
                     id: 2, name: "Baking Masters", week: 2,
-                    winner: { username: "priya_s", full_name: "Priya Sharma", avatar: "🎂", dish_name: "Triple Chocolate Cake", dish_description: "Three layers of rich chocolate cake.", votes: 423, image: "🍰" },
+                    winner: { username: "priya_s", full_name: "Priya Sharma", avatar: "", dish_name: "Triple Chocolate Cake", dish_description: "Three layers of rich chocolate cake.", votes: 423, image: "" },
                     top_participants: [
-                        { rank: 1, username: "priya_s", full_name: "Priya Sharma", dish_name: "Triple Chocolate Cake", votes: 423, avatar: "🎂" },
-                        { rank: 2, username: "lisa_c", full_name: "Lisa Chen", dish_name: "Croissants", votes: 387, avatar: "🥐" },
-                        { rank: 3, username: "emma_w", full_name: "Emma Watson", dish_name: "Cheesecake", votes: 312, avatar: "🍰" }
+                        { rank: 1, username: "priya_s", full_name: "Priya Sharma", dish_name: "Triple Chocolate Cake", votes: 423, avatar: "" },
+                        { rank: 2, username: "lisa_c", full_name: "Lisa Chen", dish_name: "Croissants", votes: 387, avatar: "" },
+                        { rank: 3, username: "emma_w", full_name: "Emma Watson", dish_name: "Cheesecake", votes: 312, avatar: "" }
                     ],
                     all_submissions: [
-                        { username: "priya_s", dish_name: "Triple Chocolate Cake", votes: 423, avatar: "🎂" },
-                        { username: "lisa_c", dish_name: "Croissants", votes: 387, avatar: "🥐" },
-                        { username: "emma_w", dish_name: "Cheesecake", votes: 312, avatar: "🍰" }
+                        { username: "priya_s", dish_name: "Triple Chocolate Cake", votes: 423, avatar: "" },
+                        { username: "lisa_c", dish_name: "Croissants", votes: 387, avatar: "" },
+                        { username: "emma_w", dish_name: "Cheesecake", votes: 312, avatar: "" }
                     ],
                     total_participants: 203, date: "February 2024"
                 },
                 3: {
                     id: 3, name: "15-Min Meals", week: 3,
-                    winner: { username: "ahmed_k", full_name: "Ahmed Khan", avatar: "⚡", dish_name: "Quick Chicken Stir Fry", dish_description: "Ready in 12 minutes!", votes: 289, image: "🥘" },
+                    winner: { username: "ahmed_k", full_name: "Ahmed Khan", avatar: "", dish_name: "Quick Chicken Stir Fry", dish_description: "Ready in 12 minutes!", votes: 289, image: "" },
                     top_participants: [
-                        { rank: 1, username: "ahmed_k", full_name: "Ahmed Khan", dish_name: "Quick Chicken Stir Fry", votes: 289, avatar: "⚡" },
-                        { rank: 2, username: "sarah_j", full_name: "Sarah Johnson", dish_name: "15-Min Pasta", votes: 267, avatar: "🍝" },
-                        { rank: 3, username: "mohamed_a", full_name: "Mohamed Ali", dish_name: "Egg Fried Rice", votes: 234, avatar: "🍚" }
+                        { rank: 1, username: "ahmed_k", full_name: "Ahmed Khan", dish_name: "Quick Chicken Stir Fry", votes: 289, avatar: "" },
+                        { rank: 2, username: "sarah_j", full_name: "Sarah Johnson", dish_name: "15-Min Pasta", votes: 267, avatar: "" },
+                        { rank: 3, username: "mohamed_a", full_name: "Mohamed Ali", dish_name: "Egg Fried Rice", votes: 234, avatar: "" }
                     ],
                     all_submissions: [
-                        { username: "ahmed_k", dish_name: "Quick Chicken Stir Fry", votes: 289, avatar: "⚡" },
-                        { username: "sarah_j", dish_name: "15-Min Pasta", votes: 267, avatar: "🍝" },
-                        { username: "mohamed_a", dish_name: "Egg Fried Rice", votes: 234, avatar: "🍚" }
+                        { username: "ahmed_k", dish_name: "Quick Chicken Stir Fry", votes: 289, avatar: "" },
+                        { username: "sarah_j", dish_name: "15-Min Pasta", votes: 267, avatar: "" },
+                        { username: "mohamed_a", dish_name: "Egg Fried Rice", votes: 234, avatar: "" }
                     ],
                     total_participants: 187, date: "March 2024"
                 },
                 4: {
                     id: 4, name: "Vegan Delight", week: 4,
-                    winner: { username: "sarah_j", full_name: "Sarah Johnson", avatar: "🌱", dish_name: "Mushroom Wellington", dish_description: "A vegan twist on classic beef wellington.", votes: 456, image: "🥧" },
+                    winner: { username: "sarah_j", full_name: "Sarah Johnson", avatar: "", dish_name: "Mushroom Wellington", dish_description: "A vegan twist on classic beef wellington.", votes: 456, image: "" },
                     top_participants: [
-                        { rank: 1, username: "sarah_j", full_name: "Sarah Johnson", dish_name: "Mushroom Wellington", votes: 456, avatar: "🌱" },
-                        { rank: 2, username: "lisa_c", full_name: "Lisa Chen", dish_name: "Buddha Bowl", votes: 398, avatar: "🥗" },
-                        { rank: 3, username: "priya_s", full_name: "Priya Sharma", dish_name: "Vegan Curry", votes: 345, avatar: "🍛" }
+                        { rank: 1, username: "sarah_j", full_name: "Sarah Johnson", dish_name: "Mushroom Wellington", votes: 456, avatar: "" },
+                        { rank: 2, username: "lisa_c", full_name: "Lisa Chen", dish_name: "Buddha Bowl", votes: 398, avatar: "" },
+                        { rank: 3, username: "priya_s", full_name: "Priya Sharma", dish_name: "Vegan Curry", votes: 345, avatar: "" }
                     ],
                     all_submissions: [
-                        { username: "sarah_j", dish_name: "Mushroom Wellington", votes: 456, avatar: "🌱" },
-                        { username: "lisa_c", dish_name: "Buddha Bowl", votes: 398, avatar: "🥗" },
-                        { username: "priya_s", dish_name: "Vegan Curry", votes: 345, avatar: "🍛" }
+                        { username: "sarah_j", dish_name: "Mushroom Wellington", votes: 456, avatar: "" },
+                        { username: "lisa_c", dish_name: "Buddha Bowl", votes: 398, avatar: "" },
+                        { username: "priya_s", dish_name: "Vegan Curry", votes: 345, avatar: "" }
                     ],
                     total_participants: 234, date: "April 2024"
                 }
@@ -509,11 +509,11 @@
                 const modalTitle = document.getElementById('modalTitle');
                 const modalBody = document.getElementById('modalBody');
 
-                modalTitle.textContent = `🏆 Week ${challenge.week}: ${challenge.name} Results`;
+                modalTitle.textContent = `Week ${challenge.week}: ${challenge.name} Results`;
 
                 modalBody.innerHTML = `
                     <div class="winner-section">
-                        <div class="winner-avatar">${challenge.winner.avatar} 👑</div>
+                        <div class="winner-avatar">${challenge.winner.avatar} </div>
                         <div class="winner-name">${challenge.winner.full_name}</div>
                         <div class="winner-dish">@${challenge.winner.username}</div>
                         <div style="font-size: 1.5rem; margin: 0.5rem 0;">${challenge.winner.dish_name}</div>
@@ -521,7 +521,7 @@
                         <div style="margin-top: 0.5rem;">⭐ ${challenge.winner.votes} votes</div>
                     </div>
 
-                    <h3>🥇 Top Participants</h3>
+                    <h3>Top Participants</h3>
                     ${challenge.top_participants.map(p => `
                         <div class="participant-item">
                             <div class="participant-rank rank-${p.rank}">#${p.rank}</div>
@@ -535,7 +535,7 @@
                         </div>
                     `).join('')}
 
-                    <h3 style="margin-top: 1.5rem;">📋 All Submissions (${challenge.all_submissions.length})</h3>
+                    <h3 style="margin-top: 1.5rem;">All Submissions (${challenge.all_submissions.length})</h3>
                     ${challenge.all_submissions.map(s => `
                         <div class="submission-card">
                             <div style="display: flex; align-items: center; gap: 0.5rem;">
@@ -550,8 +550,8 @@
                     `).join('')}
 
                     <div style="margin-top: 1.5rem; padding: 1rem; background: #f0f0f0; border-radius: var(--radius-lg); text-align: center;">
-                        <div>👥 Total Participants: ${challenge.total_participants}</div>
-                        <div>📅 Challenge Date: ${challenge.date}</div>
+                        <div> Total Participants: ${challenge.total_participants}</div>
+                        <div> Challenge Date: ${challenge.date}</div>
                     </div>
                 `;
 
@@ -625,7 +625,7 @@
 
             if (joined) {
                 submissionForm.style.display = 'block';
-                joinBtn.textContent = '✓ Already Joined';
+                joinBtn.textContent = ' Already Joined';
                 joinBtn.disabled = true;
                 joinBtn.style.opacity = '0.6';
             }
@@ -634,14 +634,14 @@
                 joined = true;
                 localStorage.setItem('challengeJoined', 'true');
                 submissionForm.style.display = 'block';
-                joinBtn.textContent = '✓ Joined Successfully!';
+                joinBtn.textContent = ' Joined Successfully!';
                 joinBtn.disabled = true;
                 joinBtn.style.opacity = '0.6';
                 
                 participantCount++;
                 document.getElementById('participantCount').textContent = participantCount;
                 
-                showNotification('You joined the challenge! Good luck! 🎉', 'success');
+                showNotification('You joined the challenge! Good luck!', 'success');
                 confetti();
             });
 
@@ -695,7 +695,7 @@ submitForm.addEventListener('submit', async (e) => {
         const challengeResult = await challengeResponse.json();
         
         if (challengeResult.success) {
-            showNotification('Your entry has been submitted! Good luck! 🎉', 'success');
+            showNotification('Your entry has been submitted! Good luck!', 'success');
             submitForm.reset();
             document.getElementById('challengeImage').value = '';
             confetti();

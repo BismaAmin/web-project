@@ -1,0 +1,136 @@
+/* =============================================================
+   Sizzle & Share — Leaderboard Page
+   ============================================================= */
+
+.leaderboard-header {
+    text-align: center;
+    padding: 3rem 1.5rem 2rem;
+}
+
+.leaderboard-header h1 { margin-bottom: 0.5rem; }
+.leaderboard-header p  { color: var(--color-text-light); }
+
+.leaderboard-table {
+    max-width: 860px;
+    margin: 0 auto;
+    padding: 0 1.5rem 4rem;
+}
+
+/* ── Leaderboard Row ──────────────────────────────────────────── */
+.leaderboard-row {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    background: var(--color-card, white);
+    border-radius: var(--radius-md);
+    padding: 0.85rem 1.25rem;
+    margin-bottom: 0.65rem;
+    border: 1px solid var(--color-border);
+    box-shadow: var(--shadow-xs);
+    transition: transform var(--transition-fast), box-shadow var(--transition-fast);
+    border-left: 4px solid transparent;
+}
+
+.leaderboard-row:hover {
+    transform: translateX(4px);
+    box-shadow: var(--shadow-md);
+}
+
+/* Medal colours */
+.leaderboard-row.rank-1 { border-left-color: #FFD700; }
+.leaderboard-row.rank-2 { border-left-color: #C0C0C0; }
+.leaderboard-row.rank-3 { border-left-color: #CD7F32; }
+
+/* ── Rank Badge ───────────────────────────────────────────────── */
+.rank-badge {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: var(--color-background);
+    border: 2px solid var(--color-border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 900;
+    font-size: 0.9rem;
+    color: var(--color-text-light);
+    flex-shrink: 0;
+}
+
+.leaderboard-row.rank-1 .rank-badge { background: #FFD700; border-color: #FFD700; color: white; }
+.leaderboard-row.rank-2 .rank-badge { background: #C0C0C0; border-color: #C0C0C0; color: white; }
+.leaderboard-row.rank-3 .rank-badge { background: #CD7F32; border-color: #CD7F32; color: white; }
+
+/* ── Avatar ───────────────────────────────────────────────────── */
+.leaderboard-avatar {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    object-fit: cover;
+    background: linear-gradient(135deg, var(--color-primary), var(--color-purple));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.25rem;
+    flex-shrink: 0;
+    overflow: hidden;
+}
+
+/* ── Name / Info ──────────────────────────────────────────────── */
+.leaderboard-info { flex: 1; min-width: 0; }
+.leaderboard-name { font-weight: 700; color: var(--color-text); font-size: 0.95rem; }
+.leaderboard-sub  { font-size: 0.8rem; color: var(--color-text-light); }
+
+/* ── Score ────────────────────────────────────────────────────── */
+.leaderboard-score {
+    font-size: 1.1rem;
+    font-weight: 900;
+    color: var(--color-primary);
+    white-space: nowrap;
+}
+
+.leaderboard-score-label {
+    font-size: 0.75rem;
+    color: var(--color-text-lighter);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    font-weight: 600;
+}
+
+/* ── Podium (top 3 hero cards) ────────────────────────────────── */
+.podium {
+    display: flex;
+    justify-content: center;
+    align-items: flex-end;
+    gap: 1.25rem;
+    padding: 2rem 1.5rem 2.5rem;
+    max-width: 680px;
+    margin: 0 auto;
+    flex-wrap: wrap;
+}
+
+.podium-card {
+    text-align: center;
+    background: var(--color-card, white);
+    border-radius: var(--radius-lg);
+    padding: 1.5rem 1.25rem 1rem;
+    border: 1px solid var(--color-border);
+    box-shadow: var(--shadow-md);
+    flex: 1;
+    min-width: 140px;
+    max-width: 200px;
+    position: relative;
+}
+
+.podium-card.place-1 {
+    transform: translateY(-12px);
+    box-shadow: var(--shadow-xl);
+    border-top: 4px solid #FFD700;
+}
+
+.podium-card.place-2 { border-top: 4px solid #C0C0C0; }
+.podium-card.place-3 { border-top: 4px solid #CD7F32; }
+
+.podium-emoji  { font-size: 2.8rem; display: block; margin-bottom: 0.6rem; line-height: 1; }
+.podium-name   { font-weight: 700; font-size: 0.9rem; color: var(--color-text); }
+.podium-score  { font-size: 0.85rem; color: var(--color-primary); font-weight: 700; }
