@@ -1,0 +1,231 @@
+/* =============================================================
+   Sizzle & Share — Form Components
+   ============================================================= */
+
+/* ── Form Group ───────────────────────────────────────────────── */
+.form-group {
+    margin-bottom: var(--spacing-lg);
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: var(--spacing-sm);
+    font-weight: 600;
+    font-size: 0.9rem;
+    color: var(--color-text);
+}
+
+.form-group input,
+.form-group textarea,
+.form-group select {
+    width: 100%;
+    padding: 0.7rem 1rem;
+    border: 2px solid var(--color-border);
+    border-radius: var(--radius-md);
+    background: var(--color-card, white);
+    color: var(--color-text);
+    font-family: var(--font-base);
+    font-size: 0.95rem;
+    line-height: 1.5;
+    transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+    -webkit-appearance: none;
+    appearance: none;
+}
+
+.form-group input:hover,
+.form-group textarea:hover,
+.form-group select:hover {
+    border-color: var(--color-border-strong, #D0D0DC);
+}
+
+.form-group input:focus,
+.form-group textarea:focus,
+.form-group select:focus {
+    outline: none;
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 3px var(--color-primary-faint, rgba(255, 107, 53, 0.12));
+}
+
+.form-group textarea {
+    min-height: 120px;
+    resize: vertical;
+}
+
+/* ── Validation States ────────────────────────────────────────── */
+.form-group input.error,
+.form-group textarea.error,
+.form-group select.error {
+    border-color: var(--color-danger);
+    box-shadow: 0 0 0 3px var(--color-danger-faint, rgba(239, 71, 111, 0.1));
+}
+
+.form-group input.success,
+.form-group textarea.success {
+    border-color: var(--color-success);
+    box-shadow: 0 0 0 3px var(--color-success-faint, rgba(6, 214, 160, 0.1));
+}
+
+.error-message {
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+    color: var(--color-danger);
+    font-size: 0.8rem;
+    margin-top: 0.35rem;
+    font-weight: 500;
+}
+
+.success-message {
+    color: var(--color-success);
+    font-size: 0.8rem;
+    margin-top: 0.35rem;
+    font-weight: 500;
+}
+
+.form-hint {
+    color: var(--color-text-light);
+    font-size: 0.8rem;
+    margin-top: 0.35rem;
+}
+
+/* ── Form Row (2-col) ─────────────────────────────────────────── */
+.form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--spacing-md);
+}
+
+@media (max-width: 480px) {
+    .form-row { grid-template-columns: 1fr; }
+}
+
+/* ── Search Bar ───────────────────────────────────────────────── */
+.search-bar {
+    position: relative;
+    max-width: 520px;
+    margin: 0 auto;
+}
+
+.search-bar input {
+    width: 100%;
+    padding: 0.825rem 1.1rem 0.825rem 3rem;
+    border-radius: var(--radius-full);
+    border: 2px solid var(--color-border);
+    background: var(--color-card, white);
+    font-size: 0.95rem;
+    transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+.search-bar input:focus {
+    outline: none;
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 3px var(--color-primary-faint, rgba(255, 107, 53, 0.12));
+}
+
+.search-bar::before {
+    content: '🔍';
+    position: absolute;
+    left: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 1rem;
+    pointer-events: none;
+    z-index: 1;
+}
+
+/* ── Checkbox & Radio ─────────────────────────────────────────── */
+.checkbox-group,
+.radio-group {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    cursor: pointer;
+}
+
+.checkbox-group input[type="checkbox"],
+.radio-group input[type="radio"] {
+    width: 18px;
+    height: 18px;
+    accent-color: var(--color-primary);
+    cursor: pointer;
+    flex-shrink: 0;
+}
+
+/* ── Password Strength ────────────────────────────────────────── */
+.password-strength {
+    height: 4px;
+    background: var(--color-border);
+    border-radius: var(--radius-full);
+    margin-top: var(--spacing-sm);
+    overflow: hidden;
+}
+
+.strength-bar {
+    height: 100%;
+    width: 0%;
+    border-radius: var(--radius-full);
+    transition: width 0.35s ease, background 0.35s ease;
+}
+
+.strength-bar.weak   { width: 33%;  background: var(--color-danger); }
+.strength-bar.medium { width: 66%;  background: var(--color-accent-dark, #F5D742); }
+.strength-bar.strong { width: 100%; background: var(--color-success); }
+
+/* ── Filters Bar (Recipes / Gallery) ─────────────────────────── */
+.filters-bar {
+    background: var(--color-card, white);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    padding: 1rem 1.25rem;
+    margin-bottom: 1.5rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    align-items: center;
+}
+
+.filter-group {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.filter-group label {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--color-text-light);
+    white-space: nowrap;
+}
+
+.filter-select {
+    padding: 0.45rem 0.85rem;
+    border: 1.5px solid var(--color-border);
+    border-radius: var(--radius-full);
+    background: var(--color-background);
+    color: var(--color-text);
+    font-family: var(--font-base);
+    font-size: 0.875rem;
+    cursor: pointer;
+    transition: border-color var(--transition-fast);
+}
+
+.filter-select:focus {
+    outline: none;
+    border-color: var(--color-primary);
+}
+
+/* ── Drop Zone ────────────────────────────────────────────────── */
+.drop-zone {
+    border: 2.5px dashed var(--color-border-strong, #D0D0DC);
+    border-radius: var(--radius-lg);
+    padding: var(--spacing-2xl);
+    text-align: center;
+    cursor: pointer;
+    transition: border-color var(--transition-fast), background var(--transition-fast);
+}
+
+.drop-zone:hover,
+.drop-zone.drag-over {
+    border-color: var(--color-primary);
+    background: var(--color-primary-faint, rgba(255, 107, 53, 0.04));
+}

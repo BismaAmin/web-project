@@ -1,0 +1,147 @@
+/* =============================================================
+   Sizzle & Share — Buttons
+   ============================================================= */
+
+/* ── Base ─────────────────────────────────────────────────────── */
+.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--spacing-sm);
+    padding: 0.7rem 1.5rem;
+    font-family: var(--font-base);
+    font-weight: 600;
+    font-size: 0.95rem;
+    line-height: 1.2;
+    border-radius: var(--radius-full);
+    border: 2px solid transparent;
+    cursor: pointer;
+    text-decoration: none;
+    position: relative;
+    overflow: hidden;
+    transition: transform var(--transition-fast),
+                box-shadow var(--transition-fast),
+                background var(--transition-fast),
+                border-color var(--transition-fast);
+    white-space: nowrap;
+    user-select: none;
+}
+
+/* Ripple on click */
+.btn::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    background: rgba(255, 255, 255, 0.18);
+    opacity: 0;
+    transition: opacity var(--transition-fast);
+}
+.btn:active::after { opacity: 1; }
+
+/* ── Variants ─────────────────────────────────────────────────── */
+.btn-primary {
+    background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%);
+    color: white;
+    box-shadow: var(--shadow-sm);
+}
+.btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+}
+.btn-primary:active { transform: translateY(0); }
+
+.btn-secondary {
+    background: linear-gradient(135deg, var(--color-secondary) 0%, var(--color-secondary-dark) 100%);
+    color: white;
+    box-shadow: var(--shadow-sm);
+}
+.btn-secondary:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+}
+
+.btn-success {
+    background: linear-gradient(135deg, var(--color-success) 0%, var(--color-success-dark) 100%);
+    color: white;
+    box-shadow: var(--shadow-sm);
+}
+.btn-success:hover { transform: translateY(-2px); box-shadow: var(--shadow-md); }
+
+.btn-danger {
+    background: linear-gradient(135deg, var(--color-danger) 0%, var(--color-danger-dark) 100%);
+    color: white;
+    box-shadow: var(--shadow-sm);
+}
+.btn-danger:hover  { transform: translateY(-2px); box-shadow: var(--shadow-md); }
+
+.btn-purple {
+    background: linear-gradient(135deg, var(--color-purple) 0%, var(--color-purple-dark) 100%);
+    color: white;
+    box-shadow: var(--shadow-sm);
+}
+.btn-purple:hover  { transform: translateY(-2px); box-shadow: var(--shadow-md); }
+
+/* Outline */
+.btn-outline {
+    background: transparent;
+    border-color: var(--color-primary);
+    color: var(--color-primary);
+}
+.btn-outline:hover {
+    background: var(--color-primary);
+    color: white;
+    transform: translateY(-2px);
+}
+
+.btn-outline-secondary {
+    border-color: var(--color-secondary);
+    color: var(--color-secondary);
+    background: transparent;
+}
+.btn-outline-secondary:hover {
+    background: var(--color-secondary);
+    color: white;
+    transform: translateY(-2px);
+}
+
+/* Ghost */
+.btn-ghost {
+    background: transparent;
+    color: var(--color-text);
+    border-color: transparent;
+}
+.btn-ghost:hover {
+    background: rgba(0, 0, 0, 0.05);
+    transform: translateY(-1px);
+}
+
+/* ── Sizes ────────────────────────────────────────────────────── */
+.btn-xs  { padding: 0.3rem 0.75rem; font-size: 0.78rem; }
+.btn-sm  { padding: 0.5rem 1.1rem;  font-size: 0.875rem; }
+.btn-lg  { padding: 0.9rem 2rem;    font-size: 1.05rem; }
+.btn-xl  { padding: 1.1rem 2.5rem;  font-size: 1.15rem; }
+
+/* Block */
+.btn-block { width: 100%; justify-content: center; }
+
+/* Icon-only (square) */
+.btn-icon {
+    padding: 0.65rem;
+    aspect-ratio: 1;
+    justify-content: center;
+}
+
+/* ── States ───────────────────────────────────────────────────── */
+.btn:disabled,
+.btn.disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none !important;
+    box-shadow: none !important;
+}
+
+.btn.loading {
+    pointer-events: none;
+    opacity: 0.8;
+}
