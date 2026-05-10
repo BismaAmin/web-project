@@ -1,0 +1,79 @@
+/* =============================================================
+   Sizzle & Share — Sidebar Layout
+   ============================================================= */
+
+.sidebar {
+    width: 260px;
+    flex-shrink: 0;
+    background: var(--color-card, white);
+    border-radius: var(--radius-lg);
+    padding: var(--spacing-lg);
+    border: 1px solid var(--color-border);
+    box-shadow: var(--shadow-sm);
+    height: fit-content;
+    position: sticky;
+    top: calc(60px + var(--spacing-md));
+}
+
+.sidebar-title {
+    font-size: 0.8rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    color: var(--color-text-lighter);
+    margin-bottom: var(--spacing-md);
+    padding-bottom: var(--spacing-sm);
+    border-bottom: 2px solid var(--color-border);
+}
+
+.sidebar-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.55rem 0.75rem;
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    transition: background var(--transition-fast), color var(--transition-fast);
+    color: var(--color-text-light);
+    font-size: 0.9rem;
+    font-weight: 500;
+    text-decoration: none;
+}
+
+.sidebar-item:hover,
+.sidebar-item.active {
+    background: var(--color-primary-faint, rgba(255, 107, 53, 0.08));
+    color: var(--color-primary);
+    font-weight: 600;
+}
+
+.sidebar-item .item-icon {
+    font-size: 1rem;
+    width: 20px;
+    text-align: center;
+    flex-shrink: 0;
+}
+
+/* Content area beside sidebar */
+.sidebar-layout {
+    display: flex;
+    gap: var(--spacing-xl);
+    align-items: flex-start;
+    max-width: var(--container-xl);
+    margin: 0 auto;
+    padding: var(--spacing-xl);
+}
+
+.sidebar-main { flex: 1; min-width: 0; }
+
+@media (max-width: 768px) {
+    .sidebar {
+        width: 100%;
+        position: static;
+    }
+
+    .sidebar-layout {
+        flex-direction: column;
+        padding: var(--spacing-md);
+    }
+}
