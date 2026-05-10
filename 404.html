@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>404 - Page Not Found</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Century Gothic', 'Trebuchet MS', sans-serif;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #FF6B35, #7209B7);
+            color: white;
+        }
+        .error-container { text-align: center; padding: 2rem; }
+        .error-code { font-size: 8rem; font-weight: bold; animation: bounce 1s ease infinite; }
+        .error-title { font-size: 2rem; margin: 1rem 0; }
+        .btn { display: inline-block; margin-top: 2rem; padding: 1rem 2rem; background: white; color: #FF6B35; text-decoration: none; border-radius: 50px; font-weight: bold; transition: transform 0.3s; }
+        .btn:hover { transform: translateY(-5px); }
+        @keyframes bounce { 0%,100%{transform:translateY(0);} 50%{transform:translateY(-20px);} }
+    </style>
+</head>
+<body>
+    <div class="error-container">
+        <div class="error-code">404</div>
+        <div class="error-title">Oops! Page Not Found</div>
+        <p>The page you're looking for doesn't exist or has been moved.</p>
+        <a href="index.html" class="btn">Back to Home</a>
+    </div>
+</body>
+</html>
