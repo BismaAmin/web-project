@@ -1,0 +1,169 @@
+/* =============================================================
+   Sizzle & Share — Ingredients Page
+   ============================================================= */
+
+.ingredients-header {
+    text-align: center;
+    padding: 3rem 1.5rem 1.5rem;
+}
+
+.ingredients-header h1 { margin-bottom: 0.5rem; }
+.ingredients-header p  { color: var(--color-text-light); }
+
+/* ── Category Filters ─────────────────────────────────────────── */
+.ingredient-filters {
+    display: flex;
+    gap: 0.65rem;
+    flex-wrap: wrap;
+    justify-content: center;
+    padding: 1rem 1.5rem 1.5rem;
+    max-width: var(--container-xl);
+    margin: 0 auto;
+}
+
+.filter-btn,
+.category-btn {
+    padding: 0.45rem 1.1rem;
+    border-radius: var(--radius-full);
+    border: 1.5px solid var(--color-border);
+    background: var(--color-card, white);
+    color: var(--color-text-light);
+    font-weight: 600;
+    font-size: 0.875rem;
+    font-family: var(--font-base);
+    cursor: pointer;
+    transition: all var(--transition-fast);
+}
+
+.filter-btn:hover,
+.filter-btn.active,
+.category-btn:hover,
+.category-btn.active {
+    border-color: var(--color-primary);
+    background: var(--color-primary);
+    color: white;
+}
+
+/* ── Ingredients Grid ─────────────────────────────────────────── */
+.ingredient-grid,
+.ingredients-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 1.25rem;
+    padding: 0 1.5rem 3rem;
+    max-width: var(--container-xl);
+    margin: 0 auto;
+}
+
+/* ── Individual Card ──────────────────────────────────────────── */
+.ingredient-card {
+    position: relative;
+    background: var(--color-card, white);
+    border-radius: var(--radius-lg);
+    padding: 1.25rem 1rem;
+    text-align: center;
+    border: 2px solid var(--color-border);
+    cursor: pointer;
+    transition: transform var(--transition-fast),
+                border-color var(--transition-fast),
+                box-shadow var(--transition-fast);
+    box-shadow: var(--shadow-xs);
+}
+
+.ingredient-card:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-lg);
+    border-color: var(--color-secondary-light);
+}
+
+.ingredient-card.selected {
+    border-color: var(--color-secondary);
+    background: linear-gradient(135deg, rgba(78, 205, 196, 0.06), var(--color-card, white));
+    box-shadow: 0 0 0 3px rgba(78, 205, 196, 0.18);
+}
+
+.ingredient-card.selected::after {
+    content: '✓';
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    background: var(--color-secondary);
+    color: white;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.72rem;
+    font-weight: 700;
+}
+
+.ingredient-emoji {
+    font-size: 2.6rem;
+    display: block;
+    margin-bottom: 0.6rem;
+    line-height: 1;
+}
+
+.ingredient-name {
+    font-weight: 700;
+    font-size: 0.9rem;
+    color: var(--color-text);
+    margin-bottom: 0.2rem;
+}
+
+.ingredient-category {
+    font-size: 0.75rem;
+    color: var(--color-text-light);
+    background: var(--color-background, #FFF9F0);
+    padding: 0.15rem 0.55rem;
+    border-radius: var(--radius-full);
+    display: inline-block;
+}
+
+/* ── Selection Counter ────────────────────────────────────────── */
+.selected-count-bar {
+    position: sticky;
+    bottom: 0;
+    background: var(--color-card, white);
+    border-top: 2px solid var(--color-primary);
+    padding: 0.85rem 1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    z-index: var(--z-raised, 10);
+    box-shadow: 0 -4px 16px rgba(0, 0, 0, 0.08);
+}
+
+.selected-count {
+    font-weight: 700;
+    color: var(--color-text);
+    font-size: 0.9rem;
+}
+
+.selected-count strong { color: var(--color-primary); }
+
+/* ── Matching Recipes Panel ───────────────────────────────────── */
+.recipe-results {
+    max-width: var(--container-xl);
+    margin: 0 auto;
+    padding: 1.5rem 1.5rem 4rem;
+}
+
+.recipe-results h2 {
+    margin-bottom: 1.5rem;
+}
+
+/* ── Responsive ───────────────────────────────────────────────── */
+@media (max-width: 768px) {
+    .ingredient-grid,
+    .ingredients-grid { grid-template-columns: repeat(3, 1fr); gap: 1rem; padding: 0 1rem 2rem; }
+}
+
+@media (max-width: 480px) {
+    .ingredient-grid,
+    .ingredients-grid { grid-template-columns: repeat(2, 1fr); }
+    .selected-count-bar { flex-direction: column; align-items: stretch; text-align: center; }
+}
