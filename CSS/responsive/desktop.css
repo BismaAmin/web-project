@@ -1,0 +1,34 @@
+/* =============================================================
+   Sizzle & Share — Desktop Enhancements (≥ 769px)
+   ============================================================= */
+
+@media (min-width: 769px) {
+    /* Container */
+    .container {
+        max-width: var(--container-xl, 1280px);
+        margin: 0 auto;
+        padding: 0 2rem;
+    }
+
+    /* Explicit grid column counts */
+    .grid-2 { grid-template-columns: repeat(2, 1fr); }
+    .grid-3 { grid-template-columns: repeat(3, 1fr); }
+    .grid-4 { grid-template-columns: repeat(4, 1fr); }
+
+    .recipes-grid     { grid-template-columns: repeat(3, 1fr); }
+    .ingredients-grid { grid-template-columns: repeat(5, 1fr); }
+
+    /* Team grid 4-up on desktop */
+    .team-grid { grid-template-columns: repeat(4, 1fr); }
+
+    /* Dashboard stats 4-up */
+    .dashboard-stats { grid-template-columns: repeat(4, 1fr); }
+
+    /* Challenge grid */
+    .challenges-grid { grid-template-columns: repeat(2, 1fr); }
+}
+
+@media (min-width: 1280px) {
+    /* Large desktop: 5-col ingredients */
+    .ingredients-grid { grid-template-columns: repeat(6, 1fr); }
+}

@@ -1,0 +1,32 @@
+/* =============================================================
+   Sizzle & Share — Tablet Overrides (481px – 768px)
+   ============================================================= */
+
+@media (min-width: 481px) and (max-width: 768px) {
+    /* Typography */
+    h1 { font-size: 2.25rem; }
+    h2 { font-size: 1.75rem; }
+
+    /* Grids */
+    .grid,
+    .recipes-grid { grid-template-columns: repeat(2, 1fr) !important; }
+
+    .ingredients-grid { grid-template-columns: repeat(3, 1fr) !important; }
+
+    .team-grid { grid-template-columns: repeat(2, 1fr); }
+
+    /* Hero */
+    .hero-title { font-size: 2.5rem; }
+
+    /* Footer */
+    .footer-container { grid-template-columns: repeat(2, 1fr); }
+
+    /* Dashboard stats */
+    .dashboard-stats { grid-template-columns: repeat(2, 1fr); }
+
+    /* Profile stats */
+    .profile-stats { gap: 2rem; }
+
+    /* Navbar dropdown goes full-width on tablet */
+    .user-dropdown { max-width: 100%; }
+}
